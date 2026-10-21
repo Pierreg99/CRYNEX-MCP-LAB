@@ -18,13 +18,19 @@ jobs:
         node: ['22', '24']
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ matrix.node }}
       - name: Install dependencies
         run: npm install --no-fund
+      - name: Print generated lockfile for bootstrap
+        if: matrix.node == '22'
+        run: |
+          echo CRYNEX_LOCKFILE_BEGIN
+          base64 package-lock.json
+          echo CRYNEX_LOCKFILE_END
       - name: Type-check
         run: npm run typecheck
       - name: Run unit and protocol tests
