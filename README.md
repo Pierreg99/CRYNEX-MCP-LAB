@@ -60,6 +60,11 @@ npx @modelcontextprotocol/inspector node dist/src/index.js
 | Tool | `ping` | Returns `pong` |
 | Tool | `text_stats` | Unicode character, word, and line counts |
 | Tool | `sha256` | SHA-256 hash of UTF-8 input |
+| Tool | `crynex_json_pointer` | Query JSON documents with RFC 6901 |
+| Tool | `crynex_text_diff` | Bounded, deterministic line-span diff |
+| Tool | `crynex_slugify` | Turn text into ASCII-safe slugs |
+| Tool | `crynex_manifest_lint` | Validate Cryo plugin manifests |
+| Resource | `crynex://tools/custom` | Custom tool metadata |
 | Resource | `crynex://about` | Static server metadata |
 | Prompt | `review-tool-design` | Template for reviewing an MCP tool design |
 | Tool | `cryo_plugin_search`, `cryo_plugin_get` | Optional local manifest discovery |
@@ -96,6 +101,42 @@ the executable from an **absolute** path. Adapt the following generic
 ```
 
 Do not launch the server separately when your MCP client manages the process.
+
+## Own custom MCP functions (v0.3.0)
+
+Four local first-party tools are now available by default in both legacy and
+modern MCP. They have typed Zod inputs and structured outputs; no commands,
+internet requests, secrets or filesystem access are granted:
+
+- `crynex_json_pointer`: query a JSON document with RFC 6901; input is
+  limited to 10,000 UTF-16 code units and the pointer to 32 steps.
+- `crynex_text_diff`: compare at most 300 lines per text and return one
+  deterministic changed span (not a full multi-hunk Git diff).
+- `crynex_slugify`: create an ASCII slug, without using it as a
+  security-sensitive identifier.
+- `crynex_manifest_lint`: validate a Cryo-OMEGA-style manifest against
+  the local strict schema, returning review warnings rather than trust claims.
+
+### Quick tool examples
+
+Use the MCP Inspector (`npm run build && npx @modelcontextprotocol/inspector
+node dist/src/index.js`) and select a tool.
+
+```json
+{"tool":"crynex_json_pointer","arguments":{"document":"{\"items\":[{\"id\":\"demo\"}]}","pointer":"/items/0/id"}}
+```
+
+Expected structured result: `{"found":true,"value":"demo"}`.
+
+```json
+{"tool":"crynex_slugify","arguments":{"text":"Meine CRYNEX Tools!"}}
+```
+
+Expected structured result: `{"slug":"meine-crynex-tools"}`.
+
+To implement your **own** additional MCP functions, see
+[Custom tools developer guide](docs/CUSTOM-TOOLS.md), including a safe
+registration template, testing and integration steps.
 
 ## Opt-in Cryo-OMEGA discovery and local skills
 

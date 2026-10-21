@@ -330,7 +330,7 @@
         <div>
           <span class="eyebrow">Local-first MCP development</span>
           <h1>A safer bench for <span class="accent">MCP ideas.</span></h1>
-          <p class="hero-copy">Start with a small TypeScript server you can inspect, test over real stdio, and extend deliberately. CRYNEX MCP LAB gives you a working baseline before you add a single integration.</p>
+          <p class="hero-copy">Build on a tested TypeScript server with four original MCP utilities, inspectable schemas, and a safe extension path. CRYNEX MCP LAB gives you a working baseline before you add a single integration.</p>
           <div class="hero-actions">
             <a class="button primary" href="#quickstart">Run the starter <span aria-hidden="true">→</span></a>
             <a class="button secondary" href="https://github.com/Pierreg99/CRYNEX-MCP-LAB" target="_blank" rel="noopener noreferrer">
@@ -460,7 +460,7 @@
             <span class="eyebrow">02 / What's inside</span>
             <h2>A tiny protocol surface. <br>Easy to reason about.</h2>
           </div>
-          <p class="section-intro">Five concrete MCP examples let you see how tools, resources, and prompts fit together without granting the server outside access.</p>
+          <p class="section-intro">The built-in MCP tools now include four first-party custom functions for JSON, text diffs, slugs, and Cryo manifest validation — without granting outside access.</p>
         </div>
         <div class="capability-grid">
           <article class="capability"><span class="cap-type">Tool / utility</span><span class="cap-symbol">↗</span><h3>ping</h3><p>Check that the server responds with a simple pong.</p></article>
@@ -468,6 +468,10 @@
           <article class="capability"><span class="cap-type">Tool / digest</span><span class="cap-symbol">#</span><h3>sha256</h3><p>Return the SHA-256 digest of UTF-8 input text.</p></article>
           <article class="capability"><span class="cap-type">Resource / metadata</span><span class="cap-symbol">◉</span><h3>crynex://about</h3><p>Expose static metadata about the server as an MCP resource.</p></article>
           <article class="capability"><span class="cap-type">Prompt / review</span><span class="cap-symbol">✳</span><h3>review-tool-design</h3><p>Offer a reusable template for reviewing an MCP tool design.</p></article>
+          <article class="capability"><span class="cap-type">Custom tool / JSON</span><span class="cap-symbol">{ }</span><h3>crynex_json_pointer</h3><p>Read a JSON value safely using an RFC 6901 pointer.</p></article>
+          <article class="capability"><span class="cap-type">Custom tool / compare</span><span class="cap-symbol">±</span><h3>crynex_text_diff</h3><p>Find a bounded, deterministic changed line span.</p></article>
+          <article class="capability"><span class="cap-type">Custom tool / text</span><span class="cap-symbol">a-z</span><h3>crynex_slugify</h3><p>Convert labels into predictable ASCII slugs.</p></article>
+          <article class="capability"><span class="cap-type">Custom tool / Cryo</span><span class="cap-symbol">✓</span><h3>crynex_manifest_lint</h3><p>Check local plugin manifest fields and permission warnings.</p></article>
         </div>
       </div>
     </section>

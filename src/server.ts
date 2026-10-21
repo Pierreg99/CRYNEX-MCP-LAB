@@ -5,6 +5,7 @@ import { analyzeText } from './logic.js';
 import { findPlugin, searchPlugins, type PluginCatalog } from './connectors/cryo/catalog.js';
 import { allowed, localScopes } from './security/policy.js';
 import type { LocalSkill } from './connectors/cryo/skills.js';
+import { CUSTOM_TOOL_NAMES, registerCustomTools } from './tools/custom/index.js';
 
 const MAX_TEXT_LENGTH = 10_000;
 const textSchema = z.string().max(MAX_TEXT_LENGTH).describe('Text to process (at most 10,000 UTF-16 code units).');
@@ -18,7 +19,7 @@ export interface ServerOptions {
 }
 
 export function createServer(options: ServerOptions = {}): McpServer {
-  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.2.0' });
+  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.3.0' });
 
   server.registerTool('ping', {
     title: 'Ping tool',
@@ -57,6 +58,9 @@ export function createServer(options: ServerOptions = {}): McpServer {
     }]
   }));
 
+  // First-party local development helpers are always discoverable.
+  registerCustomTools(server);
+
   server.registerResource('about', 'crynex://about', {
     title: 'About CRYNEX MCP Lab',
     description: 'Non-sensitive server metadata.',
@@ -69,8 +73,11 @@ export function createServer(options: ServerOptions = {}): McpServer {
         name: 'crynex-mcp-lab',
         version: '0.2.0',
         transport: 'stdio',
-        tools: options.catalog ? ['ping', 'text_stats', 'sha256', 'cryo_plugin_search', 'cryo_plugin_get'] :
-          ['ping', 'text_stats', 'sha256'],
+        tools: [
+          'ping', 'text_stats', 'sha256', ...CUSTOM_TOOL_NAMES,
+          ...(options.catalog ? ['cryo_plugin_search', 'cryo_plugin_get'] : []),
+          ...(options.skills ? ['cryo_skill_search', 'cryo_skill_get'] : [])
+        ],
         access: 'local-only',
         cryoCatalog: options.catalog ? 'operator-selected read-only snapshot' : 'disabled',
         skills: options.skills ? 'enabled' : 'disabled'
