@@ -73,3 +73,15 @@ whether the file is a symlink. An invalid configuration must **fail closed**.
 
 The SDK currently supports both legacy MCP initialize and modern
 2026-07-28 protocol eras; both are covered by the integration tests.
+
+## Interactive website: validated import and editing
+
+The documentation page supports a live capability search, importing a local
+JSON configuration, editing tool entries, reordering tools with accessible
+buttons, and exporting the resulting JSON. An import only changes the browser
+draft after schema validation: wrong versions, extra fields, duplicates,
+unknown operations and oversized files are refused without losing prior data.
+
+**No automatic activation:** the server reads an explicit absolute file path
+from `CRYNEX_CUSTOM_TOOLS_FILE` at startup. Restart the local process and use
+MCP Inspector to verify real tool behavior. README.md itself cannot execute JS.

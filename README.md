@@ -79,6 +79,39 @@ Open **http://localhost:8080** to use the interactive browser-only playground.
 The repository does **not** automatically deploy GitHub Pages; the URL is local.
 </details>
 
+## 🪄 Interactive README controls
+
+GitHub supports clickable links, SVG assets, and expandable `<details>` sections,
+but it **does not execute custom JavaScript in README.md**. Real interactive
+controls run on the [static project page](docs/index.html#playground).
+
+<details>
+<summary><b>🔎 Explore and filter the MCP capability gallery</b></summary>
+
+Use the **live search field** above the gallery to filter by capability
+name or use case. Visible results update as you type; nothing is uploaded.
+
+</details>
+
+<details>
+<summary><b>🧰 Import, edit, reorder and export your own MCP tools</b></summary>
+
+1. Choose **Load example** or **Import JSON** for an existing `custom-tools.json`.
+2. Select **Edit** to change a declaration or **↑ / ↓** to reorder tools.
+3. Select **Save changes** or **Cancel edit**, then inspect the JSON preview.
+4. Save JSON and explicitly launch the local MCP server with
+   `CRYNEX_CUSTOM_TOOLS_FILE=/absolute/path/custom-tools.json`.
+
+Import validates strict `schemaVersion: 1`, unique names, only five
+approved operations, no unknown fields, at most 16 tools and a 32 KiB
+file limit. Import replaces the **local browser draft** only after validation.
+It never updates a running MCP process or executes arbitrary code.
+
+</details>
+
+![Search](docs/assets/icons/search.svg) ![Import](docs/assets/icons/import.svg)
+![Edit](docs/assets/icons/edit.svg)
+
 ## 🎮 Interactive playground
 
 <a href="docs/index.html"><img src="docs/assets/icons/terminal.svg" width="38" height="38" alt="Playground icon"/></a>

@@ -10,7 +10,9 @@ it('ships a self-contained interactive docs UI with local assets', async () => {
   const readme = await readFile(resolve('README.md'), 'utf8');
 
   for (const element of ['id="playground"', 'id="tool-builder"', 'id="play-run"',
-    'id="builder-download"', 'id="builder-output"', 'id="play-output"']) {
+    'id="builder-download"', 'id="builder-import"', 'id="builder-file"',
+    'id="builder-cancel"', 'id="capability-search"', 'id="capability-status"',
+    'id="builder-output"', 'id="play-output"']) {
     assert.ok(html.includes(element), 'Missing interactive UI element: ' + element);
   }
   assert.match(html, /src="playground\.js"/);
@@ -19,6 +21,9 @@ it('ships a self-contained interactive docs UI with local assets', async () => {
   assert.match(script, /function jsonPointer/);
   assert.match(script, /function textDiff/);
   assert.match(script, /function render/);
+  assert.match(script, /parseImportedConfig/);
+  assert.match(script, /importConfig/);
+  assert.match(script, /capabilitySearch.addEventListener/);
   assert.match(stylesheet, /prefers-reduced-motion/);
   assert.doesNotMatch(script, /(?:\bfetch\s*\(|\beval\s*\(|new Function\s*\(|XMLHttpRequest)/);
   assert.match(readme, /docs\/assets\/hero\.svg/);

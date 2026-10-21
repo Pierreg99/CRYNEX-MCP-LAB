@@ -20,6 +20,27 @@
   const allowedOps = ["uppercase", "lowercase", "trim", "slugify", "sha256"];
   const toolNamePattern = /^custom_[a-z][a-z0-9_]{2,48}$/;
   const configured = [];
+  const capabilitySearch = byId("capability-search");
+  const capabilityStatus = byId("capability-status");
+  const builderSave = byId("builder-add");
+  const builderCancel = byId("builder-cancel");
+  let editingIndex = -1;
+
+  if (capabilitySearch && capabilityStatus) {
+    const cards = Array.from(document.querySelectorAll(".capability-grid .capability"));
+    const filter = () => {
+      const needle = capabilitySearch.value.trim().toLowerCase();
+      let count = 0;
+      for (const card of cards) {
+        const visible = card.textContent.toLowerCase().includes(needle);
+        card.hidden = !visible;
+        if (visible) count++;
+      }
+      capabilityStatus.textContent = count + " of " + cards.length + " capabilities shown";
+    };
+    capabilitySearch.addEventListener("input", filter);
+    filter();
+  }
   const setStatus = (node, message, error = false) => {
     node.textContent = message;
     node.dataset.error = String(error);
@@ -145,27 +166,98 @@
   }));
 
   function data() { return { schemaVersion: 1, tools: configured.map(v => ({ ...v })) }; }
+
+  function stopEditing() {
+    editingIndex = -1;
+    builderSave.textContent = "+ Add tool";
+    builderCancel.hidden = true;
+  }
+  function editTool(index) {
+    const tool = configured[index];
+    if (!tool) return;
+    editingIndex = index;
+    name.value = tool.name;
+    title.value = tool.title;
+    description.value = tool.description;
+    operation.value = tool.operation;
+    builderSave.textContent = "✓ Save changes";
+    builderCancel.hidden = false;
+    name.focus();
+    setStatus(builderStatus, "Editing " + tool.name + ". Save changes or cancel.");
+  }
+  function moveTool(index, direction) {
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= configured.length) return;
+    [configured[index], configured[nextIndex]] = [configured[nextIndex], configured[index]];
+    stopEditing();
+    render();
+    setStatus(builderStatus, "Tool order updated in this browser draft.");
+  }
   function render() {
     list.replaceChildren();
-    for (const tool of configured) {
+    for (let index = 0; index < configured.length; index++) {
+      const tool = configured[index];
       const entry = document.createElement("li");
-      const text = document.createElement("span");
-      text.textContent = tool.name + " · " + tool.operation;
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.textContent = "Remove";
-      remove.setAttribute("aria-label", "Remove " + tool.name);
-      remove.addEventListener("click", () => {
-        const index = configured.findIndex(t => t.name === tool.name);
-        if (index >= 0) configured.splice(index, 1);
+      const label = document.createElement("span");
+      label.textContent = tool.name + " · " + tool.operation;
+      const actions = document.createElement("div");
+      actions.className = "play-entry-actions";
+      function action(text, label, listener, disabled = false) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = text;
+        button.setAttribute("aria-label", label + ": " + tool.name);
+        button.disabled = disabled;
+        button.addEventListener("click", listener);
+        actions.appendChild(button);
+      }
+      action("Edit", "Edit tool", () => editTool(index));
+      action("↑", "Move tool up", () => moveTool(index, -1), index === 0);
+      action("↓", "Move tool down", () => moveTool(index, 1), index === configured.length - 1);
+      action("Remove", "Remove tool", () => {
+        configured.splice(index, 1);
+        stopEditing();
         render();
         setStatus(builderStatus, "Tool removed from browser-only configuration.");
       });
-      entry.append(text, remove);
+      entry.append(label, actions);
       list.appendChild(entry);
     }
     builderOutput.textContent = asJSON(data());
     byId("builder-count").textContent = configured.length + " / 16 configured";
+  }
+  function parseImportedConfig(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value) ||
+        value.schemaVersion !== 1 || !Array.isArray(value.tools) ||
+        Object.keys(value).some(key => !["schemaVersion", "tools"].includes(key))) {
+      throw new Error("Expected strict schemaVersion: 1 with a tools array.");
+    }
+    if (value.tools.length > 16) throw new Error("Maximum 16 tools.");
+    const seen = new Set();
+    const imported = [];
+    for (const item of value.tools) {
+      if (!item || typeof item !== "object" || Array.isArray(item) ||
+          Object.keys(item).length !== 4 ||
+          Object.keys(item).some(key => !["name", "title", "description", "operation"].includes(key))) {
+        throw new Error("A tool has unknown or missing fields.");
+      }
+      if (typeof item.name !== "string" || !toolNamePattern.test(item.name) ||
+          typeof item.title !== "string" || item.title.length < 1 || item.title.length > 100 ||
+          typeof item.description !== "string" || item.description.length < 1 ||
+          item.description.length > 240 || typeof item.operation !== "string" ||
+          !allowedOps.includes(item.operation) || seen.has(item.name)) {
+        throw new Error("Invalid name, title, description, operation or duplicate tool.");
+      }
+      seen.add(item.name);
+      imported.push({
+        name: item.name, title: item.title,
+        description: item.description, operation: item.operation
+      });
+    }
+    if (new Blob([asJSON({ schemaVersion: 1, tools: imported })]).size > 32768) {
+      throw new Error("Configuration is larger than 32 KiB.");
+    }
+    return imported;
   }
   function add() {
     const candidate = {
@@ -183,18 +275,47 @@
     if (!allowedOps.includes(candidate.operation)) {
       setStatus(builderStatus, "Operation not allowlisted.", true); return;
     }
-    if (configured.length >= 16 || configured.some(tool => tool.name === candidate.name)) {
-      setStatus(builderStatus, "Too many tools or duplicate name.", true); return;
+    const next = configured.map(tool => ({ ...tool }));
+    if (editingIndex < 0) next.push(candidate);
+    else next[editingIndex] = candidate;
+    try {
+      parseImportedConfig({ schemaVersion: 1, tools: next });
+    } catch (error) {
+      setStatus(builderStatus, error instanceof Error ? error.message : "Invalid configuration", true);
+      return;
     }
-    const candidateData = { schemaVersion: 1, tools: [...configured, candidate] };
-    if (asJSON(candidateData).length > 32768) {
-      setStatus(builderStatus, "Generated JSON is too large.", true); return;
-    }
-    configured.push(candidate);
+    const changed = editingIndex >= 0;
+    configured.splice(0, configured.length, ...next);
+    stopEditing();
     render();
-    setStatus(builderStatus, candidate.name + " added to the browser-only config.");
+    setStatus(builderStatus, candidate.name + (changed ? " updated." : " added.") + " Changes stay in the browser until exported.");
   }
   byId("builder-add").addEventListener("click", add);
+  builderCancel.addEventListener("click", () => {
+    stopEditing();
+    setStatus(builderStatus, "Editing cancelled; configuration unchanged.");
+  });
+  const fileInput = byId("builder-file");
+  byId("builder-import").addEventListener("click", () => fileInput.click());
+  async function importConfig(file) {
+    if (!file) return;
+    try {
+      if (file.size > 32768) throw new Error("File exceeds the 32 KiB configuration limit.");
+      const raw = JSON.parse(await file.text());
+      const imported = parseImportedConfig(raw);
+      configured.splice(0, configured.length, ...imported);
+      stopEditing();
+      render();
+      setStatus(builderStatus, imported.length + " tools imported into the browser draft. No MCP server was modified.");
+    } catch (error) {
+      setStatus(builderStatus, error instanceof Error ? error.message : "Cannot import configuration", true);
+    }
+  }
+  fileInput.addEventListener("change", () => {
+    const selected = fileInput.files?.[0];
+    fileInput.value = "";
+    void importConfig(selected);
+  });
   byId("builder-example").addEventListener("click", () => {
     configured.splice(0, configured.length, {
       name: "custom_uppercase", title: "Uppercase a message",
@@ -203,10 +324,10 @@
       name: "custom_compact_slug", title: "Build an ASCII slug",
       description: "Produce a stable, URL-friendly label.", operation: "slugify"
     });
-    render(); setStatus(builderStatus, "Sample config loaded locally.");
+    stopEditing(); render(); setStatus(builderStatus, "Sample config loaded locally.");
   });
   byId("builder-clear").addEventListener("click", () => {
-    configured.splice(0); render(); setStatus(builderStatus, "Configuration cleared.");
+    configured.splice(0); stopEditing(); render(); setStatus(builderStatus, "Configuration cleared.");
   });
   async function copy(text, element) {
     try {
