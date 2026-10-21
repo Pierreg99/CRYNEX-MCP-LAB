@@ -38,7 +38,7 @@ See SECURITY.md before adding network access.
 
 ## Next milestones
 
-1. Introduce a committed lockfile for deterministic installs.
+1. Keep the committed lockfile updated and review Dependabot PRs.
 2. Add optional pluggable connectors behind explicit configuration.
 3. Add least-privilege access policy and auditable tool permissions.
 4. Consider HTTP transport only after authentication and threat modeling.

@@ -23,14 +23,9 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ matrix.node }}
-      - name: Install dependencies
-        run: npm install --no-fund
-      - name: Print generated lockfile for bootstrap
-        if: matrix.node == '22'
-        run: |
-          echo CRYNEX_LOCKFILE_BEGIN
-          base64 package-lock.json
-          echo CRYNEX_LOCKFILE_END
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --no-fund
       - name: Type-check
         run: npm run typecheck
       - name: Run unit and protocol tests

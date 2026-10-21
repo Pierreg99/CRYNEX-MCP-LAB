@@ -18,7 +18,7 @@ the official **MCP SDK v2**, Zod validation, and a real stdio integration test.
 ```bash
 git clone https://github.com/Pierreg99/CRYNEX-MCP-LAB.git
 cd CRYNEX-MCP-LAB
-npm install
+npm ci
 npm run typecheck
 npm test
 npm run build
@@ -91,10 +91,8 @@ Do not launch the server separately when your MCP client manages the process.
 
 - **No network listener, file access, child command execution or credentials.**
 - Zod validates tool inputs and enforces a maximum size.
-- GitHub Actions tests Node.js 22/24, and Dependabot proposes updates.
-- `npm install` is used until a reviewed lockfile is generated and committed;
-  for production-grade reproducibility, add `package-lock.json` and switch CI
-  to `npm ci`.
+- GitHub Actions tests Node.js 22/24 using a committed lockfile, and Dependabot proposes updates.
+- A committed `package-lock.json` and `npm ci` ensure reproducible CI installs.
 
 Read [SECURITY.md](SECURITY.md), [architecture](docs/ARCHITECTURE.md), and
 [contributing](CONTRIBUTING.md) before enabling additional capabilities.
