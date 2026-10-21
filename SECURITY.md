@@ -6,6 +6,10 @@ CRYNEX-MCP-LAB is a local-first example MCP server, **not** a hosted multi-tenan
 
 - Only the **stdio** transport is enabled. No HTTP port is opened.
 - Default tools are deterministic and use caller-provided text only.
+- Custom MCP functions only operate on bounded caller-provided strings;
+  they do not use network access, spawn processes, or read files.
+- JSON Pointer uses own-property lookups and rejects special prototype
+  keys, while manifest validation parses metadata without executing it.
 - Explicit absolute catalog or skill directory configuration enables bounded local read-only file access; it is disabled by default.
 - Tool arguments are validated by Zod, including a 10,000 UTF-16-code-unit input limit.
 - There is **no** arbitrary command execution, dynamic tool installation, network access,

@@ -8,10 +8,15 @@ MCP host (local client)
 src/index.ts -- serveStdio(() => createServer(options))
         |
         v
-src/server.ts -- MCP tools / resource / prompt (Zod validation)
+src/server.ts -- registers tools, resources and prompts
         |
-        v
-src/logic.ts -- side-effect-free text helpers
+        +-- src/tools/custom/index.ts -- first-party MCP tools (Zod)
+        |          |
+        |          +-- src/tools/custom/logic.ts -- pure bounded helpers
+        |
+        +-- src/connectors/cryo/* -- operator-selected snapshots
+        |
+        +-- src/logic.ts -- side-effect-free text helpers
 ```
 
 ## MCP surface
@@ -52,3 +57,14 @@ See SECURITY.md before adding network access.
 - No remote Cryo API is connected until its real schema, issuer, audience and scopes are known.
 
 See CRYO-INTEGRATION.md and THREAT-MODEL.md. Protocol tests exercise both legacy and modern stdio paths.
+
+## First-party custom MCP tools (v0.3.0)
+
+The always-enabled tools `crynex_json_pointer`, `crynex_text_diff`,
+`crynex_slugify` and `crynex_manifest_lint` are registered through
+`src/tools/custom/index.ts`. The pure, bounded transformations are in
+`src/tools/custom/logic.ts`. They publish typed Zod schemas, MCP read-only
+annotations, structured output and the resource `crynex://tools/custom`.
+
+Extend this registry rather than introducing dynamic imports from catalog
+files. See [CUSTOM-TOOLS.md](CUSTOM-TOOLS.md). Tests verify both MCP eras.
