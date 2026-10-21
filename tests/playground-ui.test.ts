@@ -138,3 +138,31 @@ it('interactive docs support filtering, editing, reordering, import and rejectio
   assert.equal(get('builder-status').dataset.error, 'false');
   assert.match(get('builder-status').textContent, /No MCP server was modified/);
 });
+
+it('browser demos simulate JSON shape and safe text pipelines with no network transport', async () => {
+  const script = await readFile(resolve('docs/playground.js'), 'utf8');
+  const { get, dom } = setup();
+  runInNewContext(script, {
+    document: dom,
+    Blob,
+    URL: { createObjectURL: () => 'blob:local', revokeObjectURL: () => {} },
+    navigator: { clipboard: { writeText: async () => {} } },
+    window: { clearTimeout, setTimeout },
+    console
+  });
+  get('play-tool').value = 'crynex_json_inspect';
+  await get('play-tool').emit('change');
+  await get('play-run').emit('click');
+  const summary = JSON.parse(get('play-output').textContent);
+  assert.equal(summary.type, 'object');
+  assert.deepEqual(Array.from(summary.topKeys), ['metadata', 'project', 'tools']);
+  assert.doesNotMatch(get('play-output').textContent, /not-disclosed/);
+  get('play-tool').value = 'crynex_text_pipeline';
+  await get('play-tool').emit('change');
+  await get('play-run').emit('click');
+  const output = JSON.parse(get('play-output').textContent);
+  assert.equal(output.value, 'GRUSSE-CRYNEX');
+  get('play-secondary').value = 'eval';
+  await get('play-run').emit('click');
+  assert.match(get('play-output').textContent, /isError/);
+});

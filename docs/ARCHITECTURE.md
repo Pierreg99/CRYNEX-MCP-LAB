@@ -77,3 +77,14 @@ files. See [CUSTOM-TOOLS.md](CUSTOM-TOOLS.md). Tests verify both MCP eras.
 - CI runs `npm run docs:check`, TypeScript, unit tests and real MCP protocol integration tests on Node 22/24.
 
 See [Declarative tools](DECLARATIVE-TOOLS.md) for the JSON schema and security limits.
+
+## Safe inspector and text pipelines (v0.5.0)
+
+- `src/tools/custom/inspection.ts` traverses JSON values to bounded depth,
+  returning only shape metadata (not scalars). Keys still count as metadata.
+- `src/tools/custom/pipeline.ts` allows 1–8 sequential text transformations
+  from the existing audited allowlist, checking sizes at every step.
+- Zod input and output schemas are registered in `src/tools/custom/index.ts`.
+- The static browser UI simulates a subset and is not an MCP transport.
+- `tests/workflows.test.ts` and `tests/workflows-mcp.test.ts` verify
+  failures and both protocol eras.

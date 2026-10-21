@@ -12,7 +12,7 @@
 ![Node 22+](https://img.shields.io/badge/Node.js-22%2B-287b69?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-7-357ad5?style=flat-square)
 ![MCP](https://img.shields.io/badge/MCP-SDK%20v2-7c72d1?style=flat-square)
-![Release](https://img.shields.io/badge/Release-v0.4.0-62c4cb?style=flat-square)
+![Release](https://img.shields.io/badge/Release-v0.5.0-62c4cb?style=flat-square)
 ![Local first](https://img.shields.io/badge/Security-local--first-188c7b?style=flat-square)
 
 **No cloud account. No remote execution. No surprise permissions.**
@@ -28,7 +28,7 @@
 CRYNEX MCP LAB is an **open, local-first TypeScript Model Context Protocol (MCP) laboratory**. Discover tools, inspect structured responses, create your own safe functions and build MCP-compatible integrations while keeping permissions explicit.
 
 <table>
-<tr><td width="50%"><h3>🧩 First-party MCP tools</h3>JSON Pointer, text diff, slug generator and manifest linter — immediately available over stdio.</td><td width="50%"><h3>⚙️ Declarative tool builder</h3>Declare up to 16 extra text transformation tools in a JSON file, no new TypeScript edits required.</td></tr>
+<tr><td width="50%"><h3>🧩 First-party MCP tools</h3>Nine first-party tools, including privacy-aware JSON inspection and local text pipelines — available over stdio.</td><td width="50%"><h3>⚙️ Declarative tool builder</h3>Declare up to 16 extra text transformation tools in a JSON file, no new TypeScript edits required.</td></tr>
 <tr><td><h3>🎮 Browser playground</h3>Interactive client-side **demos** and a JSON configuration generator. The page never contacts an MCP process.</td><td><h3>🔒 Permission-aware by default</h3>Network, shell and arbitrary file access are off. Operator-selected catalog, Skills and custom config files are opt-in.</td></tr>
 </table>
 
@@ -128,6 +128,8 @@ The [interactive documentation page](docs/index.html#playground) offers a respon
 | <img src="docs/assets/icons/diff.svg" width="30" alt="Diff"/> | `crynex_text_diff` | Deterministic bounded line-span comparison | Always |
 | <img src="docs/assets/icons/slug.svg" width="30" alt="Slug"/> | `crynex_slugify` | Convert text into an ASCII-safe slug | Always |
 | <img src="docs/assets/icons/shield.svg" width="30" alt="Shield"/> | `crynex_manifest_lint` | Validate a Cryo plugin manifest and show advisory warnings | Always |
+| <img src="docs/assets/icons/inspect.svg" width="30" alt="Inspect"/> | `crynex_json_inspect` | Summarize JSON type, counts, depth and keys without revealing scalar contents | Always |
+| <img src="docs/assets/icons/pipeline.svg" width="30" alt="Workflow"/> | `crynex_text_pipeline` | Apply 1–8 approved text transformations in order | Always |
 | <img src="docs/assets/icons/workflow.svg" width="30" alt="Custom"/> | `custom_*` | User-defined, allowlisted text transformations | Opt-in |
 | 📦 | `cryo_plugin_search` / `cryo_plugin_get` | Read an operator-provided Cryo catalog snapshot | Opt-in |
 | 📚 | `cryo_skill_search` / `cryo_skill_get` | Read local Skill snapshots and digests | Opt-in |
@@ -163,6 +165,35 @@ Call `crynex_slugify`:
 ```
 
 Result: `{"slug":"meine-crynex-tools"}`.
+</details>
+
+<details>
+<summary><b>🧬 New in 0.5: inspect JSON structure without exposing values</b></summary>
+
+Use `crynex_json_inspect` to summarize a small JSON document:
+
+```json
+{"document":"{\"token\":\"secret\",\"items\":[1,2]}","maxDepth":8}
+```
+
+The result contains `type`, `depth`, `nodes`, `topKeys`, and
+`truncated` but **not** scalar values. Key names themselves are still
+visible, so only send JSON you are authorized to inspect.
+
+</details>
+
+<details>
+<summary><b>🔁 New in 0.5: chain local text operations</b></summary>
+
+```json
+{"text":"  Grüße CRYNEX!  ","operations":["trim","slugify","uppercase"]}
+```
+
+Expected `value`: `GRUSSE-CRYNEX`. The server enforces a maximum
+of **eight steps** and checks output size after every step. Supported
+operations are `trim`, `uppercase`, `lowercase`, `slugify` and
+`sha256`. No arbitrary JavaScript, network calls or shell commands.
+
 </details>
 
 ## ⚙️ Build your own tools
@@ -239,7 +270,9 @@ src/
 │   ├── declarative.ts       # strict allowlisted JSON tool builder
 │   └── custom/
 │       ├── index.ts         # first-party tool registrations
-│       └── logic.ts         # pure transformation functions
+│       ├── logic.ts         # pure transformation functions
+│       ├── inspection.ts    # bounded JSON shape inspection
+│       └── pipeline.ts      # auditable local text chaining
 ├── connectors/cryo/        # local catalog and skill snapshots
 └── security/policy.ts      # deny-by-default privileges
 docs/
@@ -279,7 +312,7 @@ Read the [Security policy](SECURITY.md) and [Threat Model](docs/THREAT-MODEL.md)
 
 - [x] Working MCP SDK v2 server with stdio and structured schemas
 - [x] Read-only Cryo catalog and Skills discovery (operator opt-in)
-- [x] Four first-party CRYNEX tools and tests
+- [x] Six first-party CRYNEX tools and tests
 - [x] Declarative local `custom_*` tool registry
 - [x] Interactive browser demo, configuration builder and SVG branding
 - [ ] Verified Cryo-OMEGA remote API contract and secure opt-in read-only connector

@@ -62,6 +62,14 @@
       a: '{"id":"demo-plugin","name":"Demo Plugin","version":"1.0.0","description":"Read-only example","publisher":"Local","status":"published","capabilities":["discovery"],"requiredScopes":["plugins:read"]}',
       b: "", label: ""
     },
+    "crynex_json_inspect": {
+      a: '{"project":"CRYNEX","metadata":{"private":"not-disclosed"},"tools":[{"id":"demo"}]}',
+      b: "8", label: "Maximum depth (1–12)"
+    },
+    "crynex_text_pipeline": {
+      a: "  Grüße CRYNEX!  ", b: "trim,slugify,uppercase",
+      label: "Steps: comma-separated trim, slugify, uppercase, lowercase (1–8). SHA-256 requires MCP Inspector."
+    },
     "custom_uppercase": { a: "Hallo CRYNEX", b: "", label: "" }
   };
 
@@ -127,6 +135,62 @@
       notice: "Browser preview only. Official validation occurs in the MCP server." };
   }
 
+
+  function jsonShapePreview(source, maxDepthText) {
+    const maxDepth = Number(maxDepthText);
+    if (!Number.isInteger(maxDepth) || maxDepth < 1 || maxDepth > 12)
+      throw new Error("Maximum depth must be an integer from 1 to 12");
+    const root = JSON.parse(source);
+    const kind = (value) => value === null ? "null"
+      : Array.isArray(value) ? "array" : typeof value;
+    const type = kind(root);
+    const topKeys = type === "object" ? Object.keys(root).sort().slice(0, 24) : [];
+    const stack = [{ value: root, depth: 0 }];
+    let depth = 0, nodes = 0, objects = 0, arrays = 0, scalars = 0, truncated = false;
+    while (stack.length) {
+      const current = stack.pop();
+      nodes++;
+      if (nodes > 2048) throw new Error("JSON node limit exceeded");
+      depth = Math.max(depth, current.depth);
+      const nextType = kind(current.value);
+      if (nextType === "object") objects++;
+      else if (nextType === "array") arrays++;
+      else scalars++;
+      if (nextType !== "object" && nextType !== "array") continue;
+      const children = nextType === "array" ? current.value : Object.values(current.value);
+      if (current.depth >= maxDepth) {
+        if (children.length) truncated = true;
+        continue;
+      }
+      for (let i = children.length - 1; i >= 0; i--)
+        stack.push({ value: children[i], depth: current.depth + 1 });
+      if (stack.length > 2048) throw new Error("JSON node limit exceeded");
+    }
+    return { type, depth, nodes, objects, arrays, scalars, topKeys, truncated };
+  }
+  function textPipelinePreview(text, stepsText) {
+    const steps = stepsText.split(",").map(step => step.trim()).filter(Boolean);
+    const supported = ["uppercase", "lowercase", "trim", "slugify"];
+    if (steps.length < 1 || steps.length > 8) throw new Error("Use 1 to 8 steps");
+    if (!steps.every(step => supported.includes(step))) {
+      throw new Error("Browser demo supports uppercase, lowercase, trim and slugify. Use MCP Inspector for SHA-256.");
+    }
+    let value = text;
+    const intermediateLengths = [];
+    for (const step of steps) {
+      if (step === "uppercase") value = value.toUpperCase();
+      else if (step === "lowercase") value = value.toLowerCase();
+      else if (step === "trim") value = value.trim();
+      else value = asciiSlug(value);
+      if (value.length > maxInput) throw new Error("Intermediate output exceeds 10,000 characters");
+      intermediateLengths.push(value.length);
+    }
+    return {
+      value, operations: steps, inputLength: text.length,
+      outputLength: value.length, intermediateLengths
+    };
+  }
+
   function showExample() {
     const demo = demos[select.value];
     if (!demo) return;
@@ -147,6 +211,8 @@
         case "crynex_json_pointer": result = jsonPointer(input.value, secondary.value); break;
         case "crynex_text_diff": result = textDiff(input.value, secondary.value); break;
         case "crynex_manifest_lint": result = lintPreview(input.value); break;
+        case "crynex_json_inspect": result = jsonShapePreview(input.value, secondary.value); break;
+        case "crynex_text_pipeline": result = textPipelinePreview(input.value, secondary.value); break;
         case "custom_uppercase": result = { value: input.value.toUpperCase() }; break;
         default: throw new Error("Unknown demo tool");
       }

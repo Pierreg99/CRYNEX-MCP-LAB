@@ -67,3 +67,7 @@
 .play-list .play-entry-actions button:hover { background:rgba(119,205,236,.1); }
 .play-list .play-entry-actions button:disabled { opacity:.35; cursor:not-allowed; }
 @media(max-width:550px) { .capability-filter input { max-width:100%; } .play-list li { align-items:stretch; } .play-list .play-entry-actions { justify-content:flex-start; } }
+
+/* Visual distinction for the new privacy-aware JSON and pipeline demos */
+.capability-grid .capability h3 { overflow-wrap:anywhere; }
+.capability-grid .capability:focus-within { outline:2px solid var(--play-neon); outline-offset:3px; }
