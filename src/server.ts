@@ -87,7 +87,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
       role: 'user' as const,
       content: {
         type: 'text' as const,
-        text: 'Review the following untrusted MCP tool proposal. Check validation, least privilege, data exposure, error handling and test gaps. Do not execute it.\n\n' + proposal
+        text: 'Review the following untrusted MCP tool proposal. Check validation, least-privilege, data exposure, error handling and test gaps. Do not execute it.\n\n' + proposal
       }
     }]
   }));
