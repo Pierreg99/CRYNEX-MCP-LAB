@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "tools": [
+    {
+      "name": "custom_uppercase",
+      "title": "Uppercase a message",
+      "description": "Convert provided text to uppercase.",
+      "operation": "uppercase"
+    },
+    {
+      "name": "custom_compact_slug",
+      "title": "Build an ASCII slug",
+      "description": "Produce a stable, URL-friendly label.",
+      "operation": "slugify"
+    },
+    {
+      "name": "custom_private_digest",
+      "title": "Compute a local digest",
+      "description": "Compute SHA-256 of caller-provided UTF-8 text without storing it.",
+      "operation": "sha256"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="title subtitle">
+<title id="title">CRYNEX MCP LAB</title><desc id="subtitle">Local-first Model Context Protocol development lab, tool registry, verified tests and interactive playground</desc>
+<defs>
+ <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#070b15"/><stop offset=".52" stop-color="#111f31"/><stop offset="1" stop-color="#090f1b"/></linearGradient>
+ <linearGradient id="neon"><stop stop-color="#69edfa"/><stop offset=".55" stop-color="#8f98ff"/><stop offset="1" stop-color="#c090ef"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#1d9db1" stop-opacity=".25"/><stop offset="1" stop-color="#1d9db1" stop-opacity="0"/></radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="16"/></filter>
+ <pattern id="grid" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M35 0H0V35" stroke="#8dd5ed" stroke-opacity=".075" fill="none"/></pattern>
+</defs>
+<rect width="1200" height="440" rx="22" fill="url(#bg)"/>
+<rect width="1200" height="440" rx="22" fill="url(#grid)"/>
+<circle cx="975" cy="212" r="290" fill="url(#glow)"/>
+<path d="M0 350Q340 240 610 395T1200 310" stroke="#58cce3" stroke-opacity=".08" stroke-width="2" fill="none"/>
+<g font-family="Arial, Helvetica, sans-serif">
+<rect x="56" y="54" width="206" height="30" rx="15" fill="#183544" stroke="#3e93a4" stroke-opacity=".7"/>
+<text x="75" y="74" font-size="12" font-weight="700" letter-spacing="2" fill="#75e5f0">◆ LOCAL-FIRST · MCP v2</text>
+<text x="56" y="180" font-size="77" font-weight="800" letter-spacing="-3" fill="#f2fbff">CRYNEX</text>
+<text x="56" y="247" font-size="65" font-weight="800" letter-spacing="-2" fill="url(#neon)">MCP LAB</text>
+<text x="59" y="292" font-size="20" fill="#b2c4d7">Build secure tools. Design workflows. Explore safely.</text>
+<g font-size="13" font-weight="700" fill="#bfd9ea">
+ <rect x="58" y="326" width="112" height="36" rx="10" fill="#102733" stroke="#316576"/><text x="76" y="348">✦ TypeScript</text>
+ <rect x="181" y="326" width="102" height="36" rx="10" fill="#161d37" stroke="#3a4b87"/><text x="198" y="348">◈ Zod v4</text>
+ <rect x="294" y="326" width="114" height="36" rx="10" fill="#102733" stroke="#316576"/><text x="311" y="348">✓ CI / Tests</text>
+ <rect x="419" y="326" width="101" height="36" rx="10" fill="#161d37" stroke="#3a4b87"/><text x="435" y="348">◉ stdio</text>
+</g>
+</g>
+<g transform="translate(745 68)">
+ <rect x="9" y="14" width="390" height="291" rx="24" fill="#05121e" opacity=".65" filter="url(#soft)"/>
+ <rect width="390" height="291" rx="18" fill="#0d1624" stroke="#426a82" stroke-opacity=".85" stroke-width="1.5"/>
+ <rect width="390" height="42" rx="18" fill="#162439"/><rect y="28" width="390" height="14" fill="#162439"/>
+ <circle cx="23" cy="21" r="5" fill="#ff8181"/><circle cx="42" cy="21" r="5" fill="#fbc770"/><circle cx="61" cy="21" r="5" fill="#7fddac"/>
+ <text x="106" y="25" font-family="monospace" font-size="13" fill="#b7cce2">crynex / tool-console</text>
+ <g font-family="monospace" font-size="15">
+   <text x="24" y="81" fill="#72dff0">$ mcp tools/list</text>
+   <text x="24" y="115" fill="#bed8e8">↳ crynex_json_pointer</text>
+   <text x="24" y="146" fill="#bed8e8">↳ crynex_text_diff</text>
+   <text x="24" y="177" fill="#bed8e8">↳ custom_uppercase</text>
+   <rect x="20" y="197" width="348" height="62" rx="9" fill="#102a33"/>
+   <text x="34" y="221" fill="#8ceec1">✓ tests passed</text>
+   <text x="34" y="243" fill="#9bb9c8" font-size="12">stdio · read-only · opt-in extensions</text>
+ </g>
+</g>
+<rect x="1" y="1" width="1198" height="438" rx="21" fill="none" stroke="#5db5d5" stroke-opacity=".38"/>
+</svg>

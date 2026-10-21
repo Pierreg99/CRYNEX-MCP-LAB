@@ -10,7 +10,7 @@ CRYNEX-MCP-LAB is a local-first example MCP server, **not** a hosted multi-tenan
   they do not use network access, spawn processes, or read files.
 - JSON Pointer uses own-property lookups and rejects special prototype
   keys, while manifest validation parses metadata without executing it.
-- Explicit absolute catalog or skill directory configuration enables bounded local read-only file access; it is disabled by default.
+- Explicit absolute catalog, Skill directory or declarative tool JSON configuration enables bounded local read-only file access at startup; all are disabled by default.
 - Tool arguments are validated by Zod, including a 10,000 UTF-16-code-unit input limit.
 - There is **no** arbitrary command execution, dynamic tool installation, network access,
   arbitrary filesystem paths from MCP requests, token handling or secret exposure.
@@ -35,3 +35,7 @@ CRYNEX-MCP-LAB is a local-first example MCP server, **not** a hosted multi-tenan
 Do not disclose exploitable issues in public GitHub Issues. Contact the
 repository maintainer privately using GitHub's private vulnerability reporting
 feature, if enabled, or a non-public channel agreed with the maintainer.
+
+## Declarative tools (v0.4.0)
+
+The process operator can opt into an absolute local `CRYNEX_CUSTOM_TOOLS_FILE` JSON path. Its strict Zod schema permits up to 16 `custom_*` tools, with only five audited, pure text operations; unknown keys, invalid operations, symlinked files and oversized manifests are rejected. A caller never supplies a path. The browser Playground produces **preview data only**, runs locally and cannot execute a real MCP tool without a separately launched Inspector/client.

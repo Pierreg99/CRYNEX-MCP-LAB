@@ -1,0 +1,54 @@
+/* CRYNEX Playground — entirely local, responsive and keyboard accessible */
+:root {
+  --play-border: rgba(108, 217, 244, .19);
+  --play-neon: #77e1f0;
+  --play-soft: #9fb3cc;
+}
+.playground-section { padding: 90px 0; position: relative; overflow: hidden; }
+.playground-section:before { content: ""; pointer-events:none; position:absolute; inset:0;
+  background:radial-gradient(circle at 8% 20%, rgba(87,190,241,.11), transparent 34%),
+             radial-gradient(circle at 88% 84%, rgba(151,109,241,.11), transparent 30%); }
+.playground-section .wrap { position:relative; }
+.playground-titleline { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+.playground-titleline img { width:44px; height:44px; }
+.playground-note { margin: 0 0 28px; padding: 13px 16px; border:1px solid var(--play-border);
+  border-radius:12px; background:rgba(64,137,169,.075); font-size:13px; color:var(--play-soft); }
+.playground-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; }
+.playground-panel { min-width:0; background:linear-gradient(145deg,rgba(19,32,48,.93),rgba(12,20,34,.94));
+  border:1px solid var(--play-border); border-radius:18px; padding:24px;
+  box-shadow:0 14px 45px rgba(0,0,0,.13); }
+.playground-panel h3 { display:flex; align-items:center; gap:10px; font-size:20px; letter-spacing:-.025em; margin-bottom:8px; }
+.playground-panel h3 img { width:34px; height:34px; }
+.playground-panel p { color:var(--play-soft); font-size:13px; line-height:1.65; }
+.play-label { display:block; margin:14px 0 7px; font-size:12px; color:#d5e9f6; font-weight:700; }
+.play-input, .play-select, .play-area {
+  display:block; width:100%; border:1px solid rgba(119,205,236,.23); border-radius:10px; padding:11px 12px;
+  background:#091422; color:#e8f7ff; font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;
+  box-sizing:border-box; outline:none; }
+.play-input:focus, .play-select:focus, .play-area:focus { border-color:var(--play-neon); box-shadow:0 0 0 3px rgba(95,202,223,.13); }
+.play-area { min-height:134px; resize:vertical; }
+.play-area[hidden], .play-label[hidden] { display:none; }
+.play-buttons { display:flex; flex-wrap:wrap; gap:9px; margin-top:16px; }
+.play-action { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px;
+  font-size:13px; font-weight:700; border-radius:10px; border:1px solid rgba(122,216,244,.3);
+  background:rgba(95,216,245,.08); color:#effbff; cursor:pointer; transition:transform .18s,border-color .18s,background .18s; }
+.play-action:hover { transform:translateY(-2px); border-color:#76e5f6; background:rgba(95,216,245,.16); }
+.play-action:focus-visible { outline:2px solid #88f0f5; outline-offset:3px; }
+.play-action.primary { background:linear-gradient(120deg,#69e7f1,#98c8ff); color:#061b26; border-color:transparent; }
+.play-action.negative { color:#ffd1d3; border-color:rgba(255,140,152,.24); }
+.play-output { min-height:104px; max-height:320px; overflow:auto; margin:15px 0 5px; padding:15px;
+  white-space:pre-wrap; overflow-wrap:anywhere; border-radius:12px; border:1px solid rgba(111,180,219,.17);
+  background:#07121e; color:#b7f4db; font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; }
+.play-status { min-height:1.5em; font-size:12px; color:#8bd9b8; margin:7px 0 0; }
+.play-status[data-error="true"] { color:#ffc0c5; }
+.play-list { list-style:none; padding:0; margin:14px 0 0; display:flex; flex-direction:column; gap:8px; }
+.play-list li { display:flex; gap:8px; align-items:center; justify-content:space-between;
+  padding:10px 12px; background:rgba(105,170,210,.075); border:1px solid rgba(105,170,210,.15); border-radius:9px; }
+.play-list span { min-width:0; overflow-wrap:anywhere; font:12px/1.5 ui-monospace,Consolas,monospace; }
+.play-list button { flex-shrink:0; border:0; background:transparent; color:#f2b8bc; font-size:12px; cursor:pointer; }
+.play-list button:focus-visible { outline:2px solid #8de8f8; }
+.play-tools-iconbar { display:flex; gap:9px; align-items:center; margin-top:15px; }
+.play-tools-iconbar img {width:31px;height:31px;}
+@media(max-width:900px){.playground-grid{grid-template-columns:1fr;}.playground-section{padding:62px 0;}}
+@media(max-width:550px){.playground-panel{padding:18px}.playground-titleline h2{font-size:31px}.playground-section{padding:48px 0;}.play-buttons{gap:7px}.play-action{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.play-action{transition:none}.play-action:hover{transform:none}}

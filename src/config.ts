@@ -3,6 +3,7 @@ import { isAbsolute } from 'node:path';
 export interface LabConfig {
   readonly catalogFile?: string;
   readonly skillsDirectory?: string;
+  readonly customToolsFile?: string;
 }
 
 function configuredPath(name: string, env: NodeJS.ProcessEnv): string | undefined {
@@ -18,5 +19,7 @@ function configuredPath(name: string, env: NodeJS.ProcessEnv): string | undefine
 export function readConfig(env: NodeJS.ProcessEnv): LabConfig {
   const catalogFile = configuredPath('CRYNEX_CATALOG_FILE', env);
   const skillsDirectory = configuredPath('CRYNEX_SKILLS_DIRECTORY', env);
-  return { ...(catalogFile ? { catalogFile } : {}), ...(skillsDirectory ? { skillsDirectory } : {}) };
+  const customToolsFile = configuredPath('CRYNEX_CUSTOM_TOOLS_FILE', env);
+  return { ...(catalogFile ? { catalogFile } : {}), ...(skillsDirectory ? { skillsDirectory } : {}),
+    ...(customToolsFile ? { customToolsFile } : {}) };
 }

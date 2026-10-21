@@ -26,6 +26,8 @@ jobs:
           cache: npm
       - name: Install pinned dependencies
         run: npm ci --no-fund
+      - name: Check browser playground script
+        run: npm run docs:check
       - name: Type-check
         run: npm run typecheck
       - name: Run unit and protocol tests

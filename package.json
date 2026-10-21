@@ -1,6 +1,6 @@
 {
   "name": "crynex-mcp-lab",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "A secure, local-first TypeScript MCP lab.",
   "type": "module",
@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "start": "node dist/src/index.js",
     "test": "npm run build && node --test dist/tests/*.test.js",
-    "audit:prod": "npm audit --omit=dev --audit-level=high"
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "docs:check": "node --check docs/playground.js"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.3.1",

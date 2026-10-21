@@ -297,6 +297,7 @@
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
+  <link rel="stylesheet" href="playground.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -310,6 +311,7 @@
       </a>
       <nav class="nav-links" id="nav-links" aria-label="Main navigation">
         <a href="#capabilities">Capabilities</a>
+        <a href="#playground">Playground</a>
         <a href="#architecture">How it works</a>
         <a href="#security">Security</a>
         <a href="#roadmap">Roadmap</a>
@@ -332,7 +334,7 @@
           <h1>A safer bench for <span class="accent">MCP ideas.</span></h1>
           <p class="hero-copy">Build on a tested TypeScript server with four original MCP utilities, inspectable schemas, and a safe extension path. CRYNEX MCP LAB gives you a working baseline before you add a single integration.</p>
           <div class="hero-actions">
-            <a class="button primary" href="#quickstart">Run the starter <span aria-hidden="true">→</span></a>
+            <a class="button primary" href="#playground">Explore the lab <span aria-hidden="true">→</span></a>
             <a class="button secondary" href="https://github.com/Pierreg99/CRYNEX-MCP-LAB" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.11.08 1.7 1.14 1.7 1.14 1 .1.76 2.24 3.22 1.7.1-.72.4-1.22.7-1.5-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.14-2.99-.12-.28-.49-1.42.11-2.95 0 0 .93-.3 3.05 1.14a10.63 10.63 0 0 1 5.55 0c2.12-1.44 3.05-1.14 3.05-1.14.6 1.53.23 2.67.11 2.95.71.78 1.14 1.77 1.14 2.99 0 4.29-2.62 5.24-5.11 5.51.4.35.75 1.02.75 2.06v3.05c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>
               Explore the source
@@ -458,7 +460,7 @@
         <div class="section-head">
           <div>
             <span class="eyebrow">02 / What's inside</span>
-            <h2>A tiny protocol surface. <br>Easy to reason about.</h2>
+            <h2>Seven core MCP tools.<br>Extensible by design.</h2>
           </div>
           <p class="section-intro">The built-in MCP tools now include four first-party custom functions for JSON, text diffs, slugs, and Cryo manifest validation — without granting outside access.</p>
         </div>
@@ -472,6 +474,90 @@
           <article class="capability"><span class="cap-type">Custom tool / compare</span><span class="cap-symbol">±</span><h3>crynex_text_diff</h3><p>Find a bounded, deterministic changed line span.</p></article>
           <article class="capability"><span class="cap-type">Custom tool / text</span><span class="cap-symbol">a-z</span><h3>crynex_slugify</h3><p>Convert labels into predictable ASCII slugs.</p></article>
           <article class="capability"><span class="cap-type">Custom tool / Cryo</span><span class="cap-symbol">✓</span><h3>crynex_manifest_lint</h3><p>Check local plugin manifest fields and permission warnings.</p></article>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section playground-section" id="playground" aria-labelledby="playground-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">03 / Interactive workspace</span>
+            <div class="playground-titleline">
+              <img src="assets/icons/terminal.svg" alt="" width="44" height="44" loading="lazy">
+              <h2 id="playground-heading">Your tools. <span style="color:#77e1f0">Your lab.</span></h2>
+            </div>
+          </div>
+          <p class="section-intro">Try read-only transformations and generate MCP tool definitions without changing your source code.</p>
+        </div>
+        <p class="playground-note"><strong>Browser demo — not a connected MCP client.</strong> All previews run in this page, with no server, API calls or data uploads. Use MCP Inspector for authoritative MCP results and schema validation. In particular, the manifest linter here is illustrative, not an exact server replica.</p>
+        <div class="playground-grid">
+          <div class="playground-panel" aria-labelledby="demo-title">
+            <h3 id="demo-title"><img src="assets/icons/json.svg" alt="" loading="lazy"> Live tool preview</h3>
+            <p>Select an operation, edit the sample arguments, then run the local browser demonstration. Press Ctrl+Enter to run from a text field.</p>
+            <label class="play-label" for="play-tool">Demo operation</label>
+            <select class="play-select" id="play-tool">
+              <option value="crynex_slugify">crynex_slugify · Slug generator</option>
+              <option value="crynex_json_pointer">crynex_json_pointer · JSON lookup</option>
+              <option value="crynex_text_diff">crynex_text_diff · Text changes</option>
+              <option value="crynex_manifest_lint">crynex_manifest_lint · Manifest preview</option>
+              <option value="custom_uppercase">custom_uppercase · Declarative tool</option>
+            </select>
+            <label class="play-label" for="play-input">Input text / JSON</label>
+            <textarea class="play-area" id="play-input" rows="6" maxlength="10000" spellcheck="false"></textarea>
+            <label class="play-label" id="play-secondary-label" for="play-secondary" hidden>Additional argument</label>
+            <textarea class="play-area" id="play-secondary" rows="3" maxlength="10000" spellcheck="false" hidden></textarea>
+            <div class="play-buttons">
+              <button class="play-action primary" id="play-run" type="button">▶ Run demo</button>
+              <button class="play-action" id="play-reset" type="button">↺ Reset example</button>
+              <button class="play-action" id="play-copy" type="button">⧉ Copy result</button>
+            </div>
+            <label class="play-label" for="play-output">Structured result (browser demo)</label>
+            <pre class="play-output" id="play-output" role="status" aria-live="polite" tabindex="0"></pre>
+            <p class="play-status" id="play-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="playground-panel" id="tool-builder" aria-labelledby="builder-heading">
+            <h3 id="builder-heading"><img src="assets/icons/workflow.svg" alt="" loading="lazy"> Custom MCP tool builder</h3>
+            <p>Create <strong>up to 16</strong> new MCP tool declarations using audited local transformations. No arbitrary code or shell execution.</p>
+            <label class="play-label" for="builder-name">Tool identifier (custom_*)</label>
+            <input class="play-input" id="builder-name" type="text" value="custom_uppercase" maxlength="56" autocomplete="off" spellcheck="false">
+            <label class="play-label" for="builder-title">Display title</label>
+            <input class="play-input" id="builder-title" type="text" value="Uppercase a message" maxlength="100">
+            <label class="play-label" for="builder-description">Description</label>
+            <input class="play-input" id="builder-description" type="text" value="Convert provided text to uppercase." maxlength="240">
+            <label class="play-label" for="builder-operation">Allowlisted operation</label>
+            <select class="play-select" id="builder-operation">
+              <option value="uppercase">uppercase</option>
+              <option value="lowercase">lowercase</option>
+              <option value="trim">trim</option>
+              <option value="slugify">slugify</option>
+              <option value="sha256">sha256</option>
+            </select>
+            <div class="play-buttons">
+              <button class="play-action primary" id="builder-add" type="button">+ Add tool</button>
+              <button class="play-action" id="builder-example" type="button">Load example</button>
+              <button class="play-action negative" id="builder-clear" type="button">Clear</button>
+            </div>
+            <label class="play-label" id="builder-count">0 / 16 configured</label>
+            <ul id="builder-list" class="play-list" aria-label="Configured local tools"></ul>
+            <label class="play-label" for="builder-output">custom-tools.json — generated configuration</label>
+            <pre class="play-output" id="builder-output" tabindex="0" aria-live="polite"></pre>
+            <div class="play-buttons">
+              <button class="play-action primary" id="builder-download" type="button">↓ Save JSON</button>
+              <button class="play-action" id="builder-copy" type="button">⧉ Copy JSON</button>
+            </div>
+            <p class="play-status" id="builder-status" role="status" aria-live="polite"></p>
+            <p>To activate: set <code>CRYNEX_CUSTOM_TOOLS_FILE</code> to the absolute path of this file when starting your local MCP server. Nothing is activated automatically by this page.</p>
+          </div>
+        </div>
+        <div class="play-tools-iconbar" aria-label="CRYNEX capability icons">
+          <img src="assets/icons/json.svg" alt="JSON" loading="lazy">
+          <img src="assets/icons/diff.svg" alt="Diff" loading="lazy">
+          <img src="assets/icons/slug.svg" alt="Slug" loading="lazy">
+          <img src="assets/icons/shield.svg" alt="Manifest checks" loading="lazy">
+          <img src="assets/icons/workflow.svg" alt="Workflow" loading="lazy">
+          <span class="muted" style="font-size:12px">Designed for source transparency and deliberate permissions.</span>
         </div>
       </div>
     </section>
@@ -506,7 +592,7 @@
         </div>
         <div class="panel guard-list">
           <div class="guard-item"><span class="guard-check" aria-hidden="true">✓</span><div><strong>No network listener</strong><p>The server uses stdio; it does not open a port.</p></div></div>
-          <div class="guard-item"><span class="guard-check" aria-hidden="true">✓</span><div><strong>No filesystem or child-process access</strong><p>Current operations do not read files or run shell commands.</p></div></div>
+          <div class="guard-item"><span class="guard-check" aria-hidden="true">✓</span><div><strong>No arbitrary filesystem or child-process access</strong><p>The default tools do not access files or run shell commands; configured catalogs and tools are loaded only from explicit local operator paths.</p></div></div>
           <div class="guard-item"><span class="guard-check" aria-hidden="true">✓</span><div><strong>No credentials in the starter</strong><p>The shipped tools do not require secrets or connect to third-party systems.</p></div></div>
           <div class="guard-item"><span class="guard-check" aria-hidden="true">✓</span><div><strong>Keep protocol stdout clean</strong><p>Diagnostics go to stderr so MCP messages remain parseable.</p></div></div>
         </div>
@@ -520,18 +606,18 @@
             <span class="eyebrow">05 / Direction</span>
             <h2>Grow capability by capability.</h2>
           </div>
-          <p class="section-intro">The README roadmap separates today's starter surface from ideas that still need design and implementation.</p>
+          <p class="section-intro">A working core, local tools and interactive demos are available now. Remote integrations remain explicit future work.</p>
         </div>
         <div class="roadmap">
           <article class="roadmap-card active">
             <span class="roadmap-state"><i></i> In the starter</span>
             <h3>Typed MCP foundation</h3>
-            <p>Three local tools, Zod validation, example resources and prompts, CI, and stdio integration coverage. The developer playground remains planned.</p>
+            <p>Seven built-in local tools, optional JSON-defined tools, Zod validation, MCP resources/prompts, CI and verified stdio clients. The playground is available as a browser-only demo.</p>
           </article>
           <article class="roadmap-card">
             <span class="roadmap-state"><i></i> Planned</span>
             <h3>Opt-in connectors</h3>
-            <p>Explore an explicit connector interface for Cryo-OMEGA and compatible plugin registries.</p>
+            <p>Offline read-only Cryo and Skills catalogs are available via explicit operator configuration. Remote API integration remains planned.</p>
           </article>
           <article class="roadmap-card">
             <span class="roadmap-state"><i></i> Planned</span>
@@ -632,5 +718,6 @@
       });
     });
   </script>
+  <script src="playground.js" defer></script>
 </body>
 </html>

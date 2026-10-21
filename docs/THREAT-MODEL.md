@@ -38,3 +38,7 @@
   does not advertise or impersonate that capability.
 - Production auth, audit persistence, provenance signatures and
   sandboxed execution are outstanding work.
+
+## Added threat boundary: operator-defined tools
+
+A local `CRYNEX_CUSTOM_TOOLS_FILE` path is selected by the process owner, not by a remote MCP model. The JSON contains **data definitions only**, never code, shell commands or fetch URLs. A strict allowlist of text-only transformations, name rules, uniqueness checks and 32 KiB size bounds prevent dynamic execution. The operator must avoid giving the process unnecessary local filesystem privileges. Browser demos and generated JSON remain entirely client-side and are not an authenticated MCP transport.
