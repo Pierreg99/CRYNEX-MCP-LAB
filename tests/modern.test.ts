@@ -29,7 +29,7 @@ it('supports explicit modern MCP 2026-07-28 over stdio', { timeout: 25_000 }, as
     const result = await client.callTool({ name: 'text_stats', arguments: { text: 'modern MCP' } });
     assert.deepEqual(result.structuredContent, { characters: 10, words: 2, lines: 1 });
     const resource = await client.readResource({ uri: 'crynex://about' });
-    assert.match(JSON.stringify(resource.contents), /0.3.0/);
+    assert.match(JSON.stringify(resource.contents), /0.4.0/);
     const prompt = await client.getPrompt({ name: 'review-tool-design', arguments: { proposal: 'Read-only lookup' } });
     assert.equal(prompt.messages.length, 1);
   } finally {

@@ -3,6 +3,7 @@ import { loadSkillCatalog } from './connectors/cryo/skills.js';
 import { readConfig } from './config.js';
 import { loadPluginCatalog } from './connectors/cryo/catalog.js';
 import { createServer, type ServerOptions } from './server.js';
+import { loadDeclarativeTools } from './tools/declarative.js';
 
 async function main(): Promise<void> {
   const config = readConfig(process.env);
@@ -12,11 +13,14 @@ async function main(): Promise<void> {
     options.skills = await loadSkillCatalog(config.skillsDirectory);
   }
 
+  if (config.customToolsFile) options.configuredTools = await loadDeclarativeTools(config.customToolsFile);
+
   // The SDK requires a fresh MCP server per negotiated stdio connection.
   // stdout is exclusively for JSON-RPC; diagnostics go to stderr.
   void serveStdio(() => createServer(options));
   console.error('CRYNEX MCP Lab ready (stdio; optional local adapters: ' +
-    (options.catalog ? 'catalog ' : '') + (options.skills ? 'skills' : '') + ')');
+    (options.catalog ? 'catalog ' : '') + (options.skills ? 'skills ' : '') +
+    (options.configuredTools ? 'custom-tools' : '') + ')');
 }
 
 void main().catch(error => {

@@ -6,6 +6,7 @@ import { findPlugin, searchPlugins, type PluginCatalog } from './connectors/cryo
 import { allowed, localScopes } from './security/policy.js';
 import type { LocalSkill } from './connectors/cryo/skills.js';
 import { CUSTOM_TOOL_NAMES, registerCustomTools } from './tools/custom/index.js';
+import { registerDeclarativeTools, type DeclarativeTool } from './tools/declarative.js';
 
 const MAX_TEXT_LENGTH = 10_000;
 const textSchema = z.string().max(MAX_TEXT_LENGTH).describe('Text to process (at most 10,000 UTF-16 code units).');
@@ -16,10 +17,11 @@ const safeAnnotations = {
 export interface ServerOptions {
   catalog?: PluginCatalog;
   skills?: readonly LocalSkill[];
+  configuredTools?: readonly DeclarativeTool[];
 }
 
 export function createServer(options: ServerOptions = {}): McpServer {
-  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.3.0' });
+  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.4.0' });
 
   server.registerTool('ping', {
     title: 'Ping tool',
@@ -60,6 +62,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
 
   // First-party local development helpers are always discoverable.
   registerCustomTools(server);
+  if (options.configuredTools) registerDeclarativeTools(server, options.configuredTools);
 
   server.registerResource('about', 'crynex://about', {
     title: 'About CRYNEX MCP Lab',
@@ -71,16 +74,18 @@ export function createServer(options: ServerOptions = {}): McpServer {
       mimeType: 'application/json',
       text: JSON.stringify({
         name: 'crynex-mcp-lab',
-        version: '0.3.0',
+        version: '0.4.0',
         transport: 'stdio',
         tools: [
           'ping', 'text_stats', 'sha256', ...CUSTOM_TOOL_NAMES,
           ...(options.catalog ? ['cryo_plugin_search', 'cryo_plugin_get'] : []),
-          ...(options.skills ? ['cryo_skill_search', 'cryo_skill_get'] : [])
+          ...(options.skills ? ['cryo_skill_search', 'cryo_skill_get'] : []),
+          ...(options.configuredTools ? options.configuredTools.map(t => t.name) : [])
         ],
         access: 'local-only',
         cryoCatalog: options.catalog ? 'operator-selected read-only snapshot' : 'disabled',
-        skills: options.skills ? 'enabled' : 'disabled'
+        skills: options.skills ? 'enabled' : 'disabled',
+        configuredTools: options.configuredTools ? options.configuredTools.length : 'disabled'
       })
     }]
   }));
