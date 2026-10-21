@@ -8,6 +8,23 @@ the official **MCP SDK v2**, Zod validation, and a real stdio integration test.
 > Starter project: it does not automatically connect to GitHub, Cryo-OMEGA,
 > or third-party systems. All shipped operations are local and read-only.
 
+## Project website
+
+The responsive project page lives in [`docs/index.html`](docs/index.html). It includes
+the quick start, copyable MCP host configuration, capability overview, security
+boundaries, and clearly marked roadmap items.
+
+Preview it locally from the repository root:
+
+```bash
+python3 -m http.server 8080 --directory docs
+```
+
+Open `http://localhost:8080`. The page has no build step, runtime dependencies,
+external assets, or live server connection. It can also be served by a static host
+using `docs/` as the public directory. Hosting access and deployment are configured
+separately; committing this page does not enable GitHub Pages.
+
 ## Requirements
 
 - Node.js **22 or later**
