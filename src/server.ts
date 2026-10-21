@@ -71,7 +71,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
       mimeType: 'application/json',
       text: JSON.stringify({
         name: 'crynex-mcp-lab',
-        version: '0.2.0',
+        version: '0.3.0',
         transport: 'stdio',
         tools: [
           'ping', 'text_stats', 'sha256', ...CUSTOM_TOOL_NAMES,
