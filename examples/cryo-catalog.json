@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "plugins": [
+    {
+      "id": "crynex-demo-plugin",
+      "name": "CRYNEX Example Discovery Plugin",
+      "version": "0.1.0",
+      "description": "Illustrative local manifest only. Does not represent an installed or remotely published Cryo-OMEGA plugin.",
+      "publisher": "CRYNEX examples",
+      "status": "published",
+      "capabilities": ["discovery"],
+      "requiredScopes": ["plugins:read"]
+    }
+  ]
+}

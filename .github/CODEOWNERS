@@ -1,0 +1,6 @@
+# Review sensitive interfaces before merging
+/.github/ @Pierreg99
+/src/security/ @Pierreg99
+/src/connectors/ @Pierreg99
+/src/index.ts @Pierreg99
+/SECURITY.md @Pierreg99

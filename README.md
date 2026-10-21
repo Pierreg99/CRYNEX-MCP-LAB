@@ -5,8 +5,9 @@
 **Local-first Model Context Protocol development lab** built with TypeScript,
 the official **MCP SDK v2**, Zod validation, and a real stdio integration test.
 
-> Starter project: it does not automatically connect to GitHub, Cryo-OMEGA,
-> or third-party systems. All shipped operations are local and read-only.
+> The default runtime is entirely local and read-only. Optional Cryo and Skills
+> adapters require explicit operator-selected filesystem paths. No remote
+> Cryo-OMEGA API, plugin execution, or deployment is enabled.
 
 ## Project website
 
@@ -61,6 +62,9 @@ npx @modelcontextprotocol/inspector node dist/src/index.js
 | Tool | `sha256` | SHA-256 hash of UTF-8 input |
 | Resource | `crynex://about` | Static server metadata |
 | Prompt | `review-tool-design` | Template for reviewing an MCP tool design |
+| Tool | `cryo_plugin_search`, `cryo_plugin_get` | Optional local manifest discovery |
+| Tool | `cryo_skill_search`, `cryo_skill_get` | Optional local skill discovery |
+| Resource | `skill://crynex/<name>/SKILL.md` | Optional immutable skill document |
 
 Example tool call for `text_stats`:
 
@@ -93,6 +97,36 @@ the executable from an **absolute** path. Adapt the following generic
 
 Do not launch the server separately when your MCP client manages the process.
 
+## Opt-in Cryo-OMEGA discovery and local skills
+
+This release provides a **real read-only local adapter**, not an invented remote
+Cryo-OMEGA endpoint. It can read an operator-selected JSON catalog that follows
+the documented schema (see [Cryo integration](docs/CRYO-INTEGRATION.md)).
+To enable sample catalog discovery:
+
+```bash
+CRYNEX_CATALOG_FILE="$(pwd)/examples/cryo-catalog.json" npm run dev
+```
+
+To enable a local Skill registry as normal MCP tools and resources:
+
+```bash
+CRYNEX_SKILLS_DIRECTORY="$(pwd)/examples/skills" npm run dev
+```
+
+Both paths must be absolute. They can be enabled independently or together.
+The sample catalog and sample Skill are **illustrative** and are never
+executed. All imported metadata remains untrusted model input.
+
+The native `io.modelcontextprotocol/skills` extension is **not advertised**:
+published SDK 2.3.1 does not expose the documented Skills import paths.
+The current adapter provides read-only MCP discovery and `skill://`
+resources; the standards-native extension is a follow-up once supported
+by the locked SDK version.
+
+See [protocol support](docs/PROTOCOL-COMPLIANCE.md) and the
+[threat model](docs/THREAT-MODEL.md).
+
 ## Scripts
 
 | Command | Purpose |
@@ -106,7 +140,7 @@ Do not launch the server separately when your MCP client manages the process.
 
 ## Security and development
 
-- **No network listener, file access, child command execution or credentials.**
+- **No network listener, shell execution or credentials.** Filesystem reads are opt-in, limited to operator-selected local catalogs.
 - Zod validates tool inputs and enforces a maximum size.
 - GitHub Actions tests Node.js 22/24 using a committed lockfile, and Dependabot proposes updates.
 - A committed `package-lock.json` and `npm ci` ensure reproducible CI installs.
@@ -116,9 +150,10 @@ Read [SECURITY.md](SECURITY.md), [architecture](docs/ARCHITECTURE.md), and
 
 ## Roadmap
 
-1. Secure typed MCP tool registry and developer playground.
-2. Opt-in connector interface for Cryo-OMEGA and compatible plugin registries.
-3. Permission profiles, auditable tool execution, and optional remote transport.
+1. Modern and legacy MCP stdio verification, typed read-only catalog and Skill discovery (v0.2.0).
+2. Official Skills extension after support lands in the installed SDK.
+3. Verified Cryo-OMEGA API contracts and scoped HTTPS discovery client.
+4. Remote auth, observability and sandboxed execution after security review.
 
 See [official MCP TypeScript SDK](https://ts.sdk.modelcontextprotocol.io/v2/)
 for the protocol and current APIs.
