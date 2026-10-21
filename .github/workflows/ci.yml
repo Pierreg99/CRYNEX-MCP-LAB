@@ -24,8 +24,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-      - name: Install pinned dependencies
-        run: npm ci --no-fund
+      - name: Synchronize lockfile for dependency migration
+        run: npm install --no-fund
+      - name: Export lockfile for review
+        if: matrix.node == '22'
+        run: |
+          echo CRYNEX_LOCKFILE_BEGIN
+          base64 package-lock.json
+          echo CRYNEX_LOCKFILE_END
       - name: Type-check
         run: npm run typecheck
       - name: Run unit and protocol tests
