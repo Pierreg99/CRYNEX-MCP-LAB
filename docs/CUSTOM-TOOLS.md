@@ -1,6 +1,6 @@
 # Build your own CRYNEX MCP functions
 
-CRYNEX v0.3.0 ships four first-party tools; unlike local plugin and Skills
+CRYNEX v0.5.0 ships six first-party tools; unlike local plugin and Skills
 snapshots, these tools are enabled by default. They are executable MCP
 **handlers**, but contain no shell execution, filesystem reads, or network
 calls. Untrusted plugin catalogs never register code dynamically.
@@ -22,6 +22,8 @@ calls. Untrusted plugin catalogs never register code dynamically.
 | `crynex_text_diff` | Two texts ≤10k each, ≤300 lines each | single changed range | linear work; no multi-hunk algorithm |
 | `crynex_slugify` | text ≤1000 chars, maxLength 1..100 | ASCII slug | UI labels only, not auth |
 | `crynex_manifest_lint` | strict manifest JSON ≤10k | valid, id, warnings, errors | advisory only, never run code |
+| `crynex_json_inspect` | JSON ≤10k, depth 1..12 | shape counters and top keys | no scalar values; max 2048 nodes |
+| `crynex_text_pipeline` | text ≤10k, 1..8 operations | final value, operations and intermediate lengths | no arbitrary commands; bounds after every step |
 
 The custom tool catalog is also exposed as the read-only MCP resource
 `crynex://tools/custom`.
@@ -82,3 +84,17 @@ runs Node.js 22 and 24 with reproducible `npm ci`.
 ## Define tools without editing TypeScript
 
 Starting in **v0.4.0**, use the opt-in [declarative tool builder](DECLARATIVE-TOOLS.md) to expose named `custom_*` tools backed only by already-audited operations. Build `custom-tools.json` through the [interactive browser documentation](index.html#tool-builder); do not treat JSON configurations as arbitrary executable plugins.
+
+## New v0.5.0 architecture
+
+- `src/tools/custom/inspection.ts`: stack-bounded JSON shape summaries.
+- `src/tools/custom/pipeline.ts`: chains operations already audited in
+  `src/tools/declarative.ts`; no arbitrary user-defined code.
+- `tests/workflows.test.ts`: rejects large JSON, unsupported operations,
+  excessive depth and oversized Unicode expansions.
+- `tests/workflows-mcp.test.ts`: real legacy and modern MCP client checks.
+
+These are **built-in** tools (always available), distinct from the opt-in
+declarative `custom_*` registry. The static website offers approximate local
+previews and does not make MCP protocol calls. Browser pipeline demos exclude
+SHA-256; run the real MCP tool in Inspector to use it.

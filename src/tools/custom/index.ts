@@ -1,12 +1,16 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { jsonPointer, lintManifest, slugify, textDiff, MAX_JSON_SIZE, MAX_DIFF_SIZE } from './logic.js';
+import { inspectJson } from './inspection.js';
+import { executePipeline, PIPELINE_OPERATIONS } from './pipeline.js';
 
 export const CUSTOM_TOOL_NAMES = [
   'crynex_json_pointer',
   'crynex_text_diff',
   'crynex_slugify',
-  'crynex_manifest_lint'
+  'crynex_manifest_lint',
+  'crynex_json_inspect',
+  'crynex_text_pipeline'
 ] as const;
 
 const readOnly = {
@@ -80,6 +84,50 @@ export function registerCustomTools(server: McpServer): void {
     }),
     annotations: readOnly
   }, async ({ manifest }) => ok(lintManifest(manifest)));
+
+
+  server.registerTool('crynex_json_inspect', {
+    title: 'CRYNEX JSON Shape Inspector',
+    description: 'Summarize type, depth, node counts and top-level keys. Scalar values are not returned. Bounded local-only inspection.',
+    inputSchema: z.strictObject({
+      document: z.string().max(MAX_JSON_SIZE),
+      maxDepth: z.number().int().min(1).max(12).default(8)
+    }),
+    outputSchema: z.strictObject({
+      type: z.enum(['object', 'array', 'string', 'number', 'boolean', 'null']),
+      depth: z.number().int().nonnegative(),
+      nodes: z.number().int().nonnegative(),
+      objects: z.number().int().nonnegative(),
+      arrays: z.number().int().nonnegative(),
+      scalars: z.number().int().nonnegative(),
+      topKeys: z.array(z.string()),
+      truncated: z.boolean()
+    }),
+    annotations: readOnly
+  }, async ({ document, maxDepth }) => {
+    try { return ok(inspectJson(document, maxDepth)); }
+    catch { return fail('Invalid or too complex JSON input'); }
+  });
+
+  server.registerTool('crynex_text_pipeline', {
+    title: 'CRYNEX Local Text Pipeline',
+    description: 'Chain 1–8 approved pure text transformations; 10,000-character intermediate limit; no arbitrary code.',
+    inputSchema: z.strictObject({
+      text: z.string().max(10_000),
+      operations: z.array(z.enum(PIPELINE_OPERATIONS)).min(1).max(8)
+    }),
+    outputSchema: z.strictObject({
+      value: z.string(),
+      operations: z.array(z.enum(PIPELINE_OPERATIONS)),
+      inputLength: z.number().int().nonnegative(),
+      outputLength: z.number().int().nonnegative(),
+      intermediateLengths: z.array(z.number().int().nonnegative())
+    }),
+    annotations: readOnly
+  }, async ({ text, operations }) => {
+    try { return ok(executePipeline(text, operations)); }
+    catch { return fail('Invalid pipeline or intermediate output limit exceeded'); }
+  });
 
   server.registerResource('custom-tool-catalog', 'crynex://tools/custom', {
     title: 'CRYNEX Custom Tools',

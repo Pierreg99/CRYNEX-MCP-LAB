@@ -21,7 +21,7 @@ export interface ServerOptions {
 }
 
 export function createServer(options: ServerOptions = {}): McpServer {
-  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.4.0' });
+  const server = new McpServer({ name: 'crynex-mcp-lab', version: '0.5.0' });
 
   server.registerTool('ping', {
     title: 'Ping tool',
@@ -74,7 +74,7 @@ export function createServer(options: ServerOptions = {}): McpServer {
       mimeType: 'application/json',
       text: JSON.stringify({
         name: 'crynex-mcp-lab',
-        version: '0.4.0',
+        version: '0.5.0',
         transport: 'stdio',
         tools: [
           'ping', 'text_stats', 'sha256', ...CUSTOM_TOOL_NAMES,

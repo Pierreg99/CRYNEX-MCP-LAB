@@ -39,3 +39,12 @@ feature, if enabled, or a non-public channel agreed with the maintainer.
 ## Declarative tools (v0.4.0)
 
 The process operator can opt into an absolute local `CRYNEX_CUSTOM_TOOLS_FILE` JSON path. Its strict Zod schema permits up to 16 `custom_*` tools, with only five audited, pure text operations; unknown keys, invalid operations, symlinked files and oversized manifests are rejected. A caller never supplies a path. The browser Playground produces **preview data only**, runs locally and cannot execute a real MCP tool without a separately launched Inspector/client.
+
+## Bounded inspection and pipelines (v0.5.0)
+
+The JSON-inspection handler receives at most 10,000 UTF-16 units; traversal
+stops at maxDepth 1–12 and rejects more than 2048 nodes. It does not return
+scalar contents; top-level key names may still be sensitive. Text pipeline
+tools accept at most eight preapproved steps and enforce the same 10,000-unit
+limit at input and after each transformation. Tool metadata is informational,
+not authorization; callers must avoid sending sensitive values.

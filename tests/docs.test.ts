@@ -20,6 +20,8 @@ it('ships a self-contained interactive docs UI with local assets', async () => {
   assert.match(html, /Browser demo — not a connected MCP client/);
   assert.match(script, /function jsonPointer/);
   assert.match(script, /function textDiff/);
+  assert.match(script, /function jsonShapePreview/);
+  assert.match(script, /function textPipelinePreview/);
   assert.match(script, /function render/);
   assert.match(script, /parseImportedConfig/);
   assert.match(script, /importConfig/);
@@ -29,7 +31,7 @@ it('ships a self-contained interactive docs UI with local assets', async () => {
   assert.match(readme, /docs\/assets\/hero\.svg/);
   assert.match(readme, /<details>/);
 
-  for (const icon of ['json', 'diff', 'slug', 'shield', 'terminal', 'workflow']) {
+  for (const icon of ['json', 'diff', 'slug', 'shield', 'terminal', 'workflow', 'pipeline', 'inspect']) {
     const file = resolve('docs/assets/icons/' + icon + '.svg');
     await access(file);
     const source = await readFile(file, 'utf8');

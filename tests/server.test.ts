@@ -14,7 +14,7 @@ it('completes MCP handshake and serves tools, resource and prompt', { timeout: 2
   await client.connect(transport);
   try {
     const listed = await client.listTools();
-    assert.deepEqual(listed.tools.map(tool => tool.name).sort(), ['crynex_json_pointer', 'crynex_manifest_lint', 'crynex_slugify', 'crynex_text_diff', 'ping', 'sha256', 'text_stats']);
+    assert.deepEqual(listed.tools.map(tool => tool.name).sort(), ['crynex_json_inspect', 'crynex_json_pointer', 'crynex_manifest_lint', 'crynex_slugify', 'crynex_text_diff', 'crynex_text_pipeline', 'ping', 'sha256', 'text_stats']);
 
     const ping = await client.callTool({ name: 'ping', arguments: {} });
     assert.equal(ping.isError, undefined);

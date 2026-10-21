@@ -18,7 +18,7 @@ it('supports explicit modern MCP 2026-07-28 over stdio', { timeout: 25_000 }, as
     assert.equal(client.getProtocolEra(), 'modern');
     const first = await client.listTools();
     const second = await client.listTools();
-    assert.deepEqual(first.tools.map(t => t.name), ['ping', 'text_stats', 'sha256', 'crynex_json_pointer', 'crynex_text_diff', 'crynex_slugify', 'crynex_manifest_lint']);
+    assert.deepEqual(first.tools.map(t => t.name), ['ping', 'text_stats', 'sha256', 'crynex_json_pointer', 'crynex_text_diff', 'crynex_slugify', 'crynex_manifest_lint', 'crynex_json_inspect', 'crynex_text_pipeline']);
     assert.deepEqual(second.tools.map(t => t.name), first.tools.map(t => t.name));
     for (const tool of first.tools) {
       assert.equal(tool.annotations?.readOnlyHint, true);
@@ -29,7 +29,7 @@ it('supports explicit modern MCP 2026-07-28 over stdio', { timeout: 25_000 }, as
     const result = await client.callTool({ name: 'text_stats', arguments: { text: 'modern MCP' } });
     assert.deepEqual(result.structuredContent, { characters: 10, words: 2, lines: 1 });
     const resource = await client.readResource({ uri: 'crynex://about' });
-    assert.match(JSON.stringify(resource.contents), /0.4.0/);
+    assert.match(JSON.stringify(resource.contents), /0.5.0/);
     const prompt = await client.getPrompt({ name: 'review-tool-design', arguments: { proposal: 'Read-only lookup' } });
     assert.equal(prompt.messages.length, 1);
   } finally {
