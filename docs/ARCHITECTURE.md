@@ -68,3 +68,12 @@ annotations, structured output and the resource `crynex://tools/custom`.
 
 Extend this registry rather than introducing dynamic imports from catalog
 files. See [CUSTOM-TOOLS.md](CUSTOM-TOOLS.md). Tests verify both MCP eras.
+
+## Declarative tool registry and browser UI (v0.4.0)
+
+- `src/tools/declarative.ts`: loads a 32KiB operator-owned strict JSON snapshot, validates 16 or fewer unique `custom_*` declarations and registers read-only MCP handlers for five allowlisted string transformations. No runtime code generation.
+- `docs/index.html`, `docs/playground.js`, `docs/playground.css`: static project UI with browser-only demonstration tools and local JSON configuration builder. The static page **cannot** communicate with the stdio server.
+- `docs/assets`: custom source SVG logo, hero banner and tool icon set.
+- CI runs `npm run docs:check`, TypeScript, unit tests and real MCP protocol integration tests on Node 22/24.
+
+See [Declarative tools](DECLARATIVE-TOOLS.md) for the JSON schema and security limits.

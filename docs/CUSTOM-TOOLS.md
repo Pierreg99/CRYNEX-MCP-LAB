@@ -78,3 +78,7 @@ npx @modelcontextprotocol/inspector node dist/src/index.js
 In Inspector, call `tools/list` and use the `crynex_*` tools.
 Use `resources/read` for `crynex://tools/custom`. The GitHub CI matrix
 runs Node.js 22 and 24 with reproducible `npm ci`.
+
+## Define tools without editing TypeScript
+
+Starting in **v0.4.0**, use the opt-in [declarative tool builder](DECLARATIVE-TOOLS.md) to expose named `custom_*` tools backed only by already-audited operations. Build `custom-tools.json` through the [interactive browser documentation](index.html#tool-builder); do not treat JSON configurations as arbitrary executable plugins.
