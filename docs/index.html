@@ -464,6 +464,11 @@
           </div>
           <p class="section-intro">The built-in MCP tools now include four first-party custom functions for JSON, text diffs, slugs, and Cryo manifest validation — without granting outside access.</p>
         </div>
+        <div class="capability-filter">
+          <label class="play-label" for="capability-search">🔎 Find a tool or capability</label>
+          <input class="play-input" id="capability-search" type="search" maxlength="80" placeholder="Search JSON, security, prompts, text..." autocomplete="off">
+          <span id="capability-status" role="status" aria-live="polite">Showing all capabilities</span>
+        </div>
         <div class="capability-grid">
           <article class="capability"><span class="cap-type">Tool / utility</span><span class="cap-symbol">↗</span><h3>ping</h3><p>Check that the server responds with a simple pong.</p></article>
           <article class="capability"><span class="cap-type">Tool / text</span><span class="cap-symbol">Aa</span><h3>text_stats</h3><p>Count Unicode characters, words, and lines in supplied text.</p></article>
@@ -536,10 +541,14 @@
             </select>
             <div class="play-buttons">
               <button class="play-action primary" id="builder-add" type="button">+ Add tool</button>
+              <button class="play-action" id="builder-cancel" type="button" hidden>Cancel edit</button>
               <button class="play-action" id="builder-example" type="button">Load example</button>
               <button class="play-action negative" id="builder-clear" type="button">Clear</button>
+              <button class="play-action" id="builder-import" type="button">↑ Import JSON</button>
+              <input id="builder-file" type="file" accept=".json,application/json" aria-label="Import a local custom-tools.json" hidden>
             </div>
             <label class="play-label" id="builder-count">0 / 16 configured</label>
+            <p class="builder-hint">Select Edit to update a tool, ↑/↓ to change its order, or import a previously saved JSON file. Import replaces only the browser draft after validation.</p>
             <ul id="builder-list" class="play-list" aria-label="Configured local tools"></ul>
             <label class="play-label" for="builder-output">custom-tools.json — generated configuration</label>
             <pre class="play-output" id="builder-output" tabindex="0" aria-live="polite"></pre>
