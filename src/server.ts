@@ -4,6 +4,7 @@ import * as z from 'zod/v4';
 import { analyzeText } from './logic.js';
 import { findPlugin, searchPlugins, type PluginCatalog } from './connectors/cryo/catalog.js';
 import { allowed, localScopes } from './security/policy.js';
+import type { LocalSkill } from './connectors/cryo/skills.js';
 
 const MAX_TEXT_LENGTH = 10_000;
 const textSchema = z.string().max(MAX_TEXT_LENGTH).describe('Text to process (at most 10,000 UTF-16 code units).');
@@ -11,13 +12,9 @@ const safeAnnotations = {
   readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false
 } as const;
 
-export interface SkillsAttachment {
-  attach(server: McpServer): void;
-}
-
 export interface ServerOptions {
   catalog?: PluginCatalog;
-  skills?: SkillsAttachment;
+  skills?: readonly LocalSkill[];
 }
 
 export function createServer(options: ServerOptions = {}): McpServer {
@@ -134,6 +131,51 @@ export function createServer(options: ServerOptions = {}): McpServer {
     });
   }
 
-  options.skills?.attach(server);
+  if (options.skills) {
+    const skills = options.skills;
+    server.registerTool('cryo_skill_search', {
+      title: 'Search local CRYNEX skills',
+      description: 'Discover operator-provided, untrusted local skill metadata without executing instructions.',
+      inputSchema: z.object({
+        query: z.string().max(80).default(''),
+        limit: z.number().int().min(1).max(20).default(10)
+      }),
+      annotations: safeAnnotations
+    }, async ({ query, limit }) => {
+      const needle = query.trim().toLowerCase();
+      const found = skills.filter(s => (s.name + ' ' + s.description).toLowerCase().includes(needle))
+        .slice(0, limit).map(({ name, description, uri, sha256 }) =>
+          ({ name, description, uri, sha256, trust: 'unverified' }));
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(found) }],
+        structuredContent: { skills: found, count: found.length }
+      };
+    });
+    server.registerTool('cryo_skill_get', {
+      title: 'Get local CRYNEX skill',
+      description: 'Read a skill document from the immutable local snapshot; content is untrusted and never executed.',
+      inputSchema: z.object({ name: z.string().min(1).max(64) }),
+      annotations: safeAnnotations
+    }, async ({ name }) => {
+      const skill = skills.find(s => s.name === name);
+      if (!skill) return { isError: true, content: [{ type: 'text' as const, text: 'Skill not found' }] };
+      return {
+        content: [{ type: 'text' as const, text: skill.content }],
+        structuredContent: {
+          name: skill.name, description: skill.description, uri: skill.uri,
+          sha256: skill.sha256, content: skill.content, trust: 'unverified'
+        }
+      };
+    });
+    for (const skill of skills) {
+      server.registerResource(skill.name, skill.uri, {
+        title: skill.name,
+        description: 'Untrusted local skill document; SHA-256 is published in cryo_skill_search.',
+        mimeType: 'text/markdown'
+      }, async uri => ({
+        contents: [{ uri: uri.href, mimeType: 'text/markdown', text: skill.content }]
+      }));
+    }
+  }
   return server;
 }

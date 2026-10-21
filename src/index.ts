@@ -1,5 +1,5 @@
 import { serveStdio } from '@modelcontextprotocol/server/stdio';
-import { loadSkills } from '@modelcontextprotocol/server/ext/skills/node';
+import { loadSkillCatalog } from './connectors/cryo/skills.js';
 import { readConfig } from './config.js';
 import { loadPluginCatalog } from './connectors/cryo/catalog.js';
 import { createServer, type ServerOptions } from './server.js';
@@ -9,7 +9,7 @@ async function main(): Promise<void> {
   const options: ServerOptions = {};
   if (config.catalogFile) options.catalog = await loadPluginCatalog(config.catalogFile);
   if (config.skillsDirectory) {
-    options.skills = await loadSkills(config.skillsDirectory, { strict: true });
+    options.skills = await loadSkillCatalog(config.skillsDirectory);
   }
 
   // The SDK requires a fresh MCP server per negotiated stdio connection.

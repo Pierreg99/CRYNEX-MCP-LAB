@@ -3,7 +3,7 @@ import { it } from 'node:test';
 import { resolve } from 'node:path';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
-import { SkillsClient } from '@modelcontextprotocol/client/ext/skills';
+import { createHash } from 'node:crypto';
 
 function inheritedEnv(): Record<string, string> {
   return Object.fromEntries(Object.entries(process.env).filter((item): item is [string, string] =>
@@ -45,7 +45,7 @@ it('offers opt-in local Cryo discovery without executing manifests', { timeout: 
   }
 });
 
-it('publishes verified MCP Skills from an explicitly chosen local directory', { timeout: 25_000 }, async () => {
+it('serves an opt-in immutable local skill snapshot over MCP', { timeout: 25_000 }, async () => {
   const client = new Client(
     { name: 'crynex-skills-test', version: '0.2.0' },
     { versionNegotiation: { mode: { pin: '2026-07-28' } } }
@@ -54,20 +54,24 @@ it('publishes verified MCP Skills from an explicitly chosen local directory', { 
     command: process.execPath,
     args: ['dist/src/index.js'],
     cwd: process.cwd(),
-    env: {
-      ...inheritedEnv(),
-      CRYNEX_SKILLS_DIRECTORY: resolve('examples/skills')
-    }
+    env: { ...inheritedEnv(), CRYNEX_SKILLS_DIRECTORY: resolve('examples/skills') }
   });
   await client.connect(transport);
   try {
-    const skills = new SkillsClient(client);
-    const listing = await skills.list();
-    const entry = listing.skills.find(s => s.frontmatter.name === 'crynex-lab');
-    assert.ok(entry, 'Expected example skill in the catalog');
-    const file = await skills.read(entry);
-    assert.equal(file.verified, true);
-    assert.match(file.body ?? '', /review and test/);
+    assert.equal(client.getProtocolEra(), 'modern');
+    const names = (await client.listTools()).tools.map(t => t.name);
+    assert.ok(names.includes('cryo_skill_search'));
+    const found = await client.callTool({ name: 'cryo_skill_search', arguments: { query: 'crynex' } });
+    const content = found.structuredContent as { skills: Array<{ name: string; uri: string; sha256: string }> };
+    assert.equal(content.skills[0]?.name, 'crynex-lab');
+    const chosen = content.skills[0];
+    assert.ok(chosen);
+    const response = await client.readResource({ uri: chosen.uri });
+    const text = response.contents[0]?.text;
+    assert.equal(typeof text, 'string');
+    assert.equal(createHash('sha256').update(String(text)).digest('hex'), chosen.sha256);
+    const get = await client.callTool({ name: 'cryo_skill_get', arguments: { name: 'crynex-lab' } });
+    assert.match(JSON.stringify(get.structuredContent), /review and test/);
   } finally {
     await client.close();
   }
