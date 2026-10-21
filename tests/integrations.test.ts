@@ -67,7 +67,9 @@ it('serves an opt-in immutable local skill snapshot over MCP', { timeout: 25_000
     const chosen = content.skills[0];
     assert.ok(chosen);
     const response = await client.readResource({ uri: chosen.uri });
-    const text = response.contents[0]?.text;
+    const resource = response.contents[0];
+    assert.ok(resource && 'text' in resource);
+    const text = resource.text;
     assert.equal(typeof text, 'string');
     assert.equal(createHash('sha256').update(String(text)).digest('hex'), chosen.sha256);
     const get = await client.callTool({ name: 'cryo_skill_get', arguments: { name: 'crynex-lab' } });
