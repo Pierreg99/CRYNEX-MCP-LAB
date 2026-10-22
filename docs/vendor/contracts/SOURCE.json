@@ -1,0 +1,14 @@
+{
+  "repository": "Pierreg99/CryNexProjectDashboards",
+  "commit": "9d125f13f193e067d29cda118b7a11c8defe1766",
+  "directory": "contracts",
+  "version": "1.0.0",
+  "sha256": {
+    "client.js": "abb90d51eb0a3935537bc3f89f45b6b18b068d6d78648fff3067a623de4c9b56",
+    "package.json": "ba27e4677544daa88607804465b1afb30432720add1f54feb3b51fa86cf183cd",
+    "tokens.css": "53ff9fc787a8b11c6e533defdea6d7911eb1a32f509776bccf949e35fd0f1ab3",
+    "index.js": "3438f783c28d42e624f81f4ad24ba00feb8e967398ab70212e0fae598e34ab15",
+    "index.d.ts": "18a07efbd1ea256d89c3abad061092ddacbdb1311e8f0474dad5b31df86691d5",
+    "client.d.ts": "89c77834a298092d8d9d61207f24807a0b9de20f894fa5886b8a76e8a1c024c1"
+  }
+}

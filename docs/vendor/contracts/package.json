@@ -1,0 +1,1 @@
+{"name":"@crynex/contracts","version":"1.0.0","type":"module","exports":{".":{"types":"./index.d.ts","default":"./index.js"},"./client":"./client.js","./tokens.css":"./tokens.css"},"files":["index.js","index.d.ts","client.js","tokens.css"]}
