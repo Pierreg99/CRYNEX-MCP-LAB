@@ -336,3 +336,11 @@ Read the [Security policy](SECURITY.md) and [Threat Model](docs/THREAT-MODEL.md)
   <a href="https://github.com/Pierreg99/CRYNEX-MCP-LAB/issues">💡 Issues / Ideas</a> ·
   <a href="https://github.com/Pierreg99/CRYNEX-MCP-LAB/actions">✅ CI</a>
 </div>
+
+## Connected team execution
+
+Serve this documentation at `/mcp/?projectId=...` through the [CryNex platform](https://github.com/Pierreg99/CryNex-App-Builder). The Connected team tools panel discovers and executes the real local MCP server over stdio through its authenticated bridge. Results are actual MCP responses. The existing playground below remains a browser simulation and is labelled separately.
+
+Project membership scopes discovery; editors and owners can invoke a bounded allowlist of first-party pure tools. The bridge launches the trusted built server with a minimal environment, closes its connection after each request and applies a time budget. Optional filesystem adapters, operator tool definitions and arbitrary commands are not enabled through the team panel. Standalone stdio clients and browser playgrounds keep their existing behavior.
+
+Build with `npm ci && npm run build` before starting the platform. Its `CRYNEX_MCP_ENTRY` points to this repository's `dist/src/index.js`. The platform's integration test performs a real handshake, discovery and tool call; this repository's 39 existing tests also pass locally. Hosted checks remain a separate gate. See [suite roadmap](ROADMAP.md).

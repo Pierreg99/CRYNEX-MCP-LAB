@@ -296,14 +296,18 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
-  </style>
+  @media(max-width:400px){.orb{max-width:100%;height:auto;aspect-ratio:1}.steps,.step,.setup-panel{min-width:0;max-width:100%}.step code{white-space:pre-wrap;overflow-wrap:anywhere}}
+#connected-tools{padding:24px;max-width:1180px;margin:auto}#connected-tools label{display:block;margin:16px 0}#connected-tools textarea,#connected-tools select{display:block;width:100%;background:#080d26;color:#e8ebff;border:1px solid #7c87b4;padding:12px}#connected-tools pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.ln{color:#92a2b8}
+</style>
   <link rel="stylesheet" href="playground.css">
+<link rel="stylesheet" href="./vendor/contracts/tokens.css"><script type="module" src="./suite.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="CRYNEX MCP LAB home">
+      <a class="brand" href="#top">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path d="M5 7.5 12 3l7 4.5v9L12 21l-7-4.5v-9Z" stroke="currentColor" stroke-width="1.4"/><path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -407,7 +411,7 @@
           <div class="panel setup-panel">
             <div class="panel-top">
               <div><h3>Quick start</h3><p>Requires Node.js 22 or later and npm.</p></div>
-              <button class="copy-button" type="button" data-copy="quickstart-code" aria-label="Copy quick start commands">
+              <button class="copy-button" type="button" data-copy="quickstart-code" aria-label="Copy commands: quick start">
                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="6" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13 6V4.5A1.5 1.5 0 0 0 11.5 3h-7A1.5 1.5 0 0 0 3 4.5v9A1.5 1.5 0 0 0 4.5 15H7" stroke="currentColor" stroke-width="1.2"/></svg>
                 Copy commands
               </button>
@@ -442,7 +446,7 @@
           <p class="section-intro">Build the server first, replace the absolute path below, and adapt this generic configuration to your host. Your host starts and manages the process.</p>
         </div>
         <div class="panel host-config">
-          <div class="panel-top"><div><h3>Generic MCP host configuration</h3><p>Replace /absolute/path with your checkout location.</p></div><button class="copy-button" type="button" data-copy="host-config-code" aria-label="Copy MCP host configuration">Copy JSON</button></div>
+          <div class="panel-top"><div><h3>Generic MCP host configuration</h3><p>Replace /absolute/path with your checkout location.</p></div><button class="copy-button" type="button" data-copy="host-config-code" aria-label="Copy JSON: MCP host configuration">Copy JSON</button></div>
           <pre class="shell" id="host-config-code" tabindex="0" aria-label="MCP host configuration"><code>{
   "mcpServers": {
     "crynex-mcp-lab": {
